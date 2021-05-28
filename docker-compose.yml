@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  server:
+    image: crystallang/crystal:1.0.0-alpine
+    volumes:
+      - ./server:/opt/server
+    working_dir: /opt/server
+    command: crystal run src/server.cr -- --bind 0.0.0.0
+    ports:
+      - 3000:3000
+  client:
+    image: mint
+    volumes:
+      - ./client:/opt/client
+    working_dir: /opt/client
+    command: start --host 0.0.0.0
+    ports:
+      - 3001:3000
