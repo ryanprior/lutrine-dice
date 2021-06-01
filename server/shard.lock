@@ -12,6 +12,10 @@ shards:
     git: https://github.com/jeromegn/kilt.git
     version: 0.4.1
 
+  pegmatite:
+    git: https://github.com/jemc/crystal-pegmatite.git
+    version: 0.2.0+git.commit.52483e2ffdfac6913342b2dae16ba11d6e4b8d07
+
   radix:
     git: https://github.com/luislavena/radix.git
     version: 0.4.1

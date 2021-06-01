@@ -12,6 +12,8 @@ targets:
 dependencies:
   kemal:
     github: kemalcr/kemal
+  pegmatite:
+    github: jemc/crystal-pegmatite
 
 crystal: 1.0.0
 
