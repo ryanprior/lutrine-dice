@@ -1,0 +1,15 @@
+#+TITLE: Lutrine Dice
+
+* Building the dev environment
+
+** Using Docker Compose
+
+Docker Compose has service definitions to build & run the client and server.
+
+#+begin_src bash
+docker-compose up -d
+#+end_src
+
+To re-build the server, run ~docker-compose restart server~. The client dev
+server will hot-reload code when you change files, but if it gets stuck you can
+~docker-compose restart client~.
