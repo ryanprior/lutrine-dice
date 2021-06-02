@@ -17,11 +17,34 @@ component Chat {
   }
 
   fun handleMessage(data: String) : Promise(Never, Void) {
-    sequence {
-      data |> Debug.log()
-      add(data)
+    try {
+
+        object =
+        Json.parse(data)
+        |> Maybe.toResult("Decode Error")
+
+      message =
+        decode object as Message
+
+      data |> Debug.log
+        add(message)
     }
+
+      catch Object.Error => err {
+
+          sequence {
+          err |> Debug.log
+          next {}}
+
+    } catch String => err {
+
+          sequence {
+      err |> Debug.log
+          next {}}
+    }
+          
   }
+
   fun handleError : Promise(Never, Void) {
     sequence {
       void

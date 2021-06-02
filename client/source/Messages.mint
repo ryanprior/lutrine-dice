@@ -1,13 +1,14 @@
 record Message {
+  username : String,
   text : String
 }
 
 store Messages {
   state list : Array(Message) = []
 
-  fun add(msg: String) {
+    fun add(message : Message) {
     next {
-      list = list |> Array.push({text=msg})
+        list = list |> Array.push(message)
     }
   }
 }
