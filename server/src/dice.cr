@@ -26,6 +26,17 @@ record Roll, dice : Dice, results : Array(Int32) do
   end
 end
 
+alias ChatMessage = Array(String | Array(Dice))
+
+def roll_message(message : ChatMessage)
+  message.map do |part|
+    case part
+    when String then part
+    when Array(Dice) then part.map(&.roll)
+    end
+  end
+end
+
 DiceGrammar = Pegmatite::DSL.define do
   whitespace = (char(' ') | char('\t')).repeat
   whitespace_pattern(whitespace)
@@ -66,7 +77,7 @@ module DiceReader
   end
 
   private def self.build_message(main, iter, source)
-    result = [] of String | Array(Dice)
+    result = ChatMessage.new
 
     iter.while_next_is_child_of(main) do |child|
       kind, start, finish = child
