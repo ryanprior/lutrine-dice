@@ -31,7 +31,7 @@ DiceGrammar = Pegmatite::DSL.define do
   whitespace_pattern(whitespace)
 
   digit = range('0', '9')
-  digits = digit.repeat
+  digits = digit.repeat(1)
   number = (
     (char('-') >> digits) |
     (digits)
@@ -41,9 +41,16 @@ DiceGrammar = Pegmatite::DSL.define do
 
   value = dice | number
 
-  compound = (value ^ ((char('+') | char('-')).named(:sign) ^ value).repeat).named :compound
+  compound = (value >> (whitespace.maybe >> (char('+') | char('-')).named(:sign) ^ value).repeat).named :compound
 
-  compound.then_eof
+  text = (~char('d') >> ~range('0', '9') >> any).repeat(1).named :text
+
+  message = (
+    text.maybe >> (
+      compound | (char('d') | range('0', '9')).named(:text)).maybe
+  ).repeat.named :message
+
+  message.then_eof
 end
 
 module DiceReader
@@ -55,17 +62,25 @@ module DiceReader
   def self.build(tokens : Array(Pegmatite::Token), source : String)
     iter = Pegmatite::TokenIterator.new(tokens)
     main = iter.next
-    build_value(main, iter, source)
+    build_message(main, iter, source)
   end
 
-  private def self.build_value(main, iter, source)
-    kind, start, finish = main
+  private def self.build_message(main, iter, source)
+    result = [] of String | Array(Dice)
 
-    value = case kind
-            when :number then source[start...finish].to_i32
-            when :compound then build_compound(main, iter, source)
-            else raise NotImplementedError.new(kind)
-            end
+    iter.while_next_is_child_of(main) do |child|
+      kind, start, finish = child
+      case kind
+      when :text then case !result.empty? && result.last
+                      when String then result.push(result.pop.as(String) + source[start...finish])
+                      else result << source[start...finish]
+                      end
+      when :compound then result << build_compound(child, iter, source)
+      else raise NotImplementedError.new kind
+      end
+    end
+
+    result
   end
 
   private def self.build_compound(main, iter, source)
@@ -78,6 +93,7 @@ module DiceReader
       when :sign then sign = source[start...finish] === "+" ? 1 : -1
       when :dice then result << build_dice(child, iter, source, sign)
       when :number then result << Dice.new source[start...finish].to_i32, 1, sign
+      else raise NotImplementedError.new kind
       end
     end
 
