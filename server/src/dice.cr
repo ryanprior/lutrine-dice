@@ -1,13 +1,30 @@
 require "pegmatite"
+require "json"
 
 record Dice, count : Int32, sides : Int32, constant : Int32 do
   def roll
     results = Array.new(count) { |_| Random.rand(1..sides) }
     Roll.new dice: self, results: results
   end
+
+  def to_h
+    {:count => count, :sides => sides, :constant => constant}
+  end
+
+  def to_json
+    to_h.to_json
+  end
 end
 
-record Roll, dice : Dice, results : Array(Int32)
+record Roll, dice : Dice, results : Array(Int32) do
+  def to_h
+    {:dice => dice.to_h, :results => results}
+  end
+
+  def to_json
+    to_h.to_json
+  end
+end
 
 DiceGrammar = Pegmatite::DSL.define do
   whitespace = (char(' ') | char('\t')).repeat
