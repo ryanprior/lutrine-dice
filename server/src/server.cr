@@ -3,6 +3,8 @@
 require "kemal"
 require "./dice"
 
+include Lutrine::Dice
+
 SOCKETS = Set(HTTP::WebSocket).new
 
 ws "/chat" do |socket|
@@ -10,9 +12,8 @@ ws "/chat" do |socket|
 
   socket.on_message do |message|
     p! message
-    dice_msg = DiceReader.read(message).to_s
-    SOCKETS.each(&.send message)
-    SOCKETS.each(&.send dice_msg)
+    dice_msg = Lutrine::Dice.roll_message Reader.read(message)
+    SOCKETS.each(&.send dice_msg.to_s)
   end
 
   socket.on_close do
