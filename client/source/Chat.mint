@@ -4,6 +4,19 @@ component Chat {
   state socket : Maybe(WebSocket) = Maybe::Nothing
   state message : String = ""
   state shouldConnect = true
+  state poast = {
+    username = "J. Random Gamer",
+    parts = [
+      Post.Part::Text("Hello world!"),
+      Post.Part::Roll({
+        dice = {
+          count = 2,
+          sides = 6
+        },
+        results = [2, 6]
+      })
+    ]
+  }
 
   use Provider.WebSocket {
     url = "ws://localhost:3000/chat",
@@ -18,31 +31,24 @@ component Chat {
 
   fun handleMessage(data: String) : Promise(Never, Void) {
     try {
-
-        object =
-        Json.parse(data)
-        |> Maybe.toResult("Decode Error")
-
-      message =
-        decode object as Message
+      object = Json.parse(data) |> Maybe.toResult("Decode Error")
+      message = decode object as Message
 
       data |> Debug.log
-        add(message)
+      add(message)
     }
 
-      catch Object.Error => err {
-
-          sequence {
-          err |> Debug.log
-          next {}}
-
+    catch Object.Error => err {
+      sequence {
+        err |> Debug.log
+        next {}
+      }
     } catch String => err {
-
-          sequence {
-      err |> Debug.log
-          next {}}
+      sequence {
+        err |> Debug.log
+        next {}
+      }
     }
-          
   }
 
   fun handleError : Promise(Never, Void) {
@@ -93,6 +99,7 @@ component Chat {
         />
       </form>
       <ol>
+        <Post post={poast} />
         for (msg of list) {
           <li><{ msg.text }></li>
         }
