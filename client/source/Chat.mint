@@ -8,13 +8,13 @@ component Chat {
     username = "J. Random Gamer",
     parts = [
       Post.Part::Text("Hello world!"),
-      Post.Part::Roll({
+      Post.Part::Rolls([{
         dice = {
           count = 2,
           sides = 6
         },
         results = [2, 6]
-      })
+      }])
     ]
   }
 

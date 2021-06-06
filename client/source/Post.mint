@@ -1,6 +1,6 @@
 enum Post.Part {
   Text(String)
-  Roll(Roll)
+  Rolls(Array(Roll))
 }
 
 record Post {
@@ -17,13 +17,17 @@ component Post {
       for (part of post.parts) {
         case (part) {
           Post.Part::Text string => <{ string }>
-            Post.Part::Roll roll =>
+            Post.Part::Rolls rolls =>
               <span>
-                <{ " " }>
-                <{ roll.dice.count |> Number.toString }><{ "d" }><{ roll.dice.sides |> Number.toString }>
-                <{ " [" }>
-                <{ roll.results |> Array.map(Number.toString) |> String.join(", ") }>
-                <{ "]" }>
+                for (roll of rolls) {
+                  <span>
+                    <{ " " }>
+                    <{ roll.dice.count |> Number.toString }><{ "d" }><{ roll.dice.sides |> Number.toString }>
+                    <{ " [" }>
+                    <{ roll.results |> Array.map(Number.toString) |> String.join(", ") }>
+                    <{ "]" }>
+                  </span>
+                }
               </span>
         }
       }
