@@ -13,3 +13,5 @@ docker-compose up -d
 To re-build the server, run ~docker-compose restart server~. The client dev
 server will hot-reload code when you change files, but if it gets stuck you can
 ~docker-compose restart client~.
+
+To view information logged by the server run ~docker-compose logs -f server~.
