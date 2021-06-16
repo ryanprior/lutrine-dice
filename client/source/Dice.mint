@@ -1,6 +1,7 @@
 record Dice {
   count : Number,
-  sides : Number
+  sides : Number,
+  constant : Number,
 }
 
 record Roll {

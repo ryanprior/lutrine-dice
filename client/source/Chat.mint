@@ -1,17 +1,19 @@
 component Chat {
-  connect Messages exposing { list, add }
+  connect Messages exposing { list, update }
 
   state socket : Maybe(WebSocket) = Maybe::Nothing
   state message : String = ""
+  state username : String = "Gamer"
   state shouldConnect = true
   state poast = {
-    username = "J. Random Gamer",
+    from = {name = "J. Random Gamer"},
     parts = [
-      Post.Part::Text("Hello world!"),
-      Post.Part::Rolls([{
+      Message.Part::Text("Hello world!"),
+      Message.Part::Rolls([{
         dice = {
           count = 2,
-          sides = 6
+          sides = 6,
+          constant = 1
         },
         results = [2, 6]
       }])
@@ -32,10 +34,10 @@ component Chat {
   fun handleMessage(data: String) : Promise(Never, Void) {
     try {
       object = Json.parse(data) |> Maybe.toResult("Decode Error")
-      message = decode object as Message
+      action = decode object as MessageAction.In
 
       data |> Debug.log
-      add(message)
+      update(action)
     }
 
     catch Object.Error => err {
@@ -78,7 +80,7 @@ component Chat {
       event |> Html.Event.preventDefault()
       /* send message to websocket */
       case (socket) {
-        Maybe::Just websocket => WebSocket.send(message, websocket)
+        Maybe::Just websocket => WebSocket.send(jsonMessage, websocket)
         => next {  }
       }
       /* reset message to empty */
@@ -86,6 +88,13 @@ component Chat {
         message = ""
       }
     }
+  } where {
+    messageObject = encode {
+      type = "message",
+      from = {name = username},
+      message = message
+    }
+    jsonMessage = Json.Stringify(messageObject)
   }
 
   fun render : Html {
@@ -99,7 +108,7 @@ component Chat {
         />
       </form>
       <ol>
-        <Post post={poast} />
+        <Post data={poast} />
         for (msg of list) {
           <li><{ msg.text }></li>
         }
