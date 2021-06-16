@@ -2,40 +2,34 @@ require "pegmatite"
 require "json"
 
 module Lutrine::Dice
+
   record Dice, count : Int32, sides : Int32, constant : Int32 do
+    include JSON::Serializable
+
     def roll
-      return Roll.new dice:self, results: [count] if sides == 1
+      return Roll.new dice: self, results: [count] if sides == 1
       Roll.new dice: self,
                results: Array.new(count) { |_| Random.rand(1..sides) }
-    end
-
-    def to_h
-      {:count => count, :sides => sides, :constant => constant}
-    end
-
-    def to_json
-      to_h.to_json
     end
   end
 
   record Roll, dice : Dice, results : Array(Int32) do
-    def to_h
-      {:dice => dice.to_h, :results => results}
-    end
-
-    def to_json
-      to_h.to_json
-    end
+    include JSON::Serializable
   end
 
-  alias ChatMessage = Array(String | Array(Dice))
+  record Message, parts : Array(String | Array(Roll)) do
+    include JSON::Serializable
 
-  def self.roll_message(message : ChatMessage)
-    message.map do |part|
-      case part
-      when String then part
-      when Array(Dice) then part.map(&.roll)
-      end
+    def self.from_string(message)
+      msg = Reader.read message
+      new(msg.map do |part|
+        case part
+        when Array(Dice)
+          part.map(&.roll)
+        else
+          part
+        end
+      end)
     end
   end
 
@@ -79,7 +73,7 @@ module Lutrine::Dice
     end
 
     private def self.build_message(main, iter, source)
-      result = ChatMessage.new
+      result = Array(String | Array(Dice)).new
 
       iter.while_next_is_child_of(main) do |child|
         kind, start, finish = child

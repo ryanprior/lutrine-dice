@@ -1,9 +1,9 @@
-# TODO: Write documentation for `Server`
+# TODO write documentation for `Server`
 
 require "kemal"
-require "./dice"
+require "./action"
 
-include Lutrine::Dice
+include Lutrine
 
 SOCKETS = Set(HTTP::WebSocket).new
 
@@ -12,8 +12,12 @@ ws "/chat" do |socket|
 
   socket.on_message do |message|
     p! message
-    dice_msg = Lutrine::Dice.roll_message Reader.read(message)
-    SOCKETS.each(&.send dice_msg.to_s)
+    action = Action.from_json message
+    case action
+    when MessageAction
+      SOCKETS.each(&.send action.roll.to_json)
+    else raise NotImplementedError.new action.class
+    end
   end
 
   socket.on_close do
