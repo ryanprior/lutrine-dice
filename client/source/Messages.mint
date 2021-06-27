@@ -1,12 +1,17 @@
 store Messages {
   state list : Array(Message) = []
 
-  fun update(action : MessageAction.In) {
-    next {
-      list = list |> Array.push({
-        from = action.from,
-        parts = action.message
-      })
+  fun update(action : MessageAction.In) : Promise(Never, Void) {
+    sequence {
+      next {
+        list = list |> Array.push({
+          from = action.from,
+          parts = action.message
+        })
+      }
+      message = {from = action.from, parts = action.message}
+      message |> Debug.log
+      next {}
     }
   }
 }

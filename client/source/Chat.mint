@@ -34,7 +34,7 @@ component Chat {
   fun handleMessage(data: String) : Promise(Never, Void) {
     try {
       object = Json.parse(data) |> Maybe.toResult("Decode Error")
-      action = decode object as MessageAction.In
+      action = MessageAction.In.fromJSON(object)
 
       data |> Debug.log
       update(action)
@@ -94,7 +94,7 @@ component Chat {
       from = {name = username},
       message = message
     }
-    jsonMessage = Json.Stringify(messageObject)
+    jsonMessage = Json.stringify(messageObject)
   }
 
   fun render : Html {
@@ -108,9 +108,9 @@ component Chat {
         />
       </form>
       <ol>
-        <Post data={poast} />
+        <li><Message data={poast} /></li>
         for (msg of list) {
-          <li><{ msg.text }></li>
+          <li><Message data={msg} /></li>
         }
       </ol>
     </div>

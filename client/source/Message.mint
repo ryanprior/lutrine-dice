@@ -3,21 +3,41 @@ enum Message.Part {
   Rolls(Array(Roll))
 }
 
+module Message.Part {
+  fun fromObject(object : Object) : Result(Object.Error, Message.Part) {
+    try {
+      part = `
+      typeof #{object} === "string"
+        ? #{Message.Part::Text(`#{object}`)}
+        : #{
+             try {
+               rolls = Object.Decode.array(Roll.fromObject, `#{object}`)
+               Result::Ok(Message.Part::Rolls(rolls))
+             } catch Object.Error => error {
+               Result::Err(error)
+             }
+           }
+      `
+      Result::Ok(part)
+    }
+  }
+}
+
 record Message {
   from : Actor,
   parts : Array(Message.Part)
 }
 
 component Message {
-  property data : Post
+  property data : Message
 
   fun render : Html {
-    <li>
+    <>
       <{ data.from.name }> ": "
       for (part of data.parts) {
         case (part) {
-          Post.Part::Text string => <{ string }>
-          Post.Part::Rolls rolls =>
+          Message.Part::Text string => <{ string }>
+          Message.Part::Rolls rolls =>
             <span>
               for (roll of rolls) {
                 <span>
@@ -31,6 +51,6 @@ component Message {
             </span>
         }
       }
-    </li>
+    </>
   }
 }
