@@ -18,15 +18,16 @@ module Lutrine
 
   class MessageAction < Action
     property from : Actor
-    property message : String | Lutrine::Dice::Message
+    property message : String | Array(String | Array(Lutrine::Dice::Roll))
 
     def roll
       msg = @message
       case msg
       when String
-        @message = Lutrine::Dice::Message.from_string msg
+        @message = Lutrine::Dice::Message.from_string(msg).parts
+        self
       else
-        msg
+        self
       end
     end
   end
