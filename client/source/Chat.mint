@@ -5,20 +5,6 @@ component Chat {
   state message : String = ""
   state username : String = "Gamer"
   state shouldConnect = true
-  state poast = {
-    from = {name = "J. Random Gamer"},
-    parts = [
-      Message.Part::Text("Hello world!"),
-      Message.Part::Rolls([{
-        dice = {
-          count = 2,
-          sides = 6,
-          constant = 1
-        },
-        results = [2, 6]
-      }])
-    ]
-  }
 
   use Provider.WebSocket {
     url = "ws://localhost:3000/chat",
@@ -108,7 +94,6 @@ component Chat {
         />
       </form>
       <ol>
-        <li><Message data={poast} /></li>
         for (msg of list) {
           <li><Message data={msg} /></li>
         }
