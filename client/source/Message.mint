@@ -14,13 +14,10 @@ module Message.Part {
   }
 
   fun fromObject(object : Object) : Result(Object.Error, Message.Part) {
-    try {
-      `
-      typeof #{object} === "string"
-        ? #{Result::Ok(Message.Part::Text(`#{object}`))}
-        : #{Message.Part.decodeRolls(object)}
-      ` as Result(Object.Error, Message.Part)
-    }
+    `typeof #{object} === "string"
+       ? #{Result::Ok(Message.Part::Text(`#{object}`))}
+       : #{Message.Part.decodeRolls(object)}
+    ` as Result(Object.Error, Message.Part)
   }
 }
 
@@ -32,6 +29,39 @@ record Message {
 component Message {
   property data : Message
 
+  style results {
+      &::before {
+        content: "[";
+      }
+      &::after {
+        content: "]";
+      }
+  }
+
+  style rolls {
+    margin: 0px 0.5rem;
+      & .roll:not(:first-child)::before {
+        content: "+";
+      }
+  }
+
+  fun renderDie(roll : Roll) : Html {
+    <span class="die roll">
+      <{ roll.dice.count |> Number.toString }>
+      if (roll.dice.sides > 1) {
+        <>
+          <{ "d" }>
+          <span class="sides">
+            <{ roll.dice.sides |> Number.toString }>
+          </span>
+          <span::results>
+            <{ roll.results |> Array.map(Number.toString) |> String.join(", ") }>
+          </span>
+        </>
+      }
+    </span>
+  }
+
   fun render : Html {
     <>
       <{ data.from.name }> ": "
@@ -39,17 +69,14 @@ component Message {
         case (part) {
           Message.Part::Text string => <{ string }>
           Message.Part::Rolls rolls =>
-            <>
+          <>
+            <{ Roll.total(rolls) |> Number.toString }>
+            <span::rolls>
               for (roll of rolls) {
-                <>
-                  <{ " " }>
-                  <{ roll.dice.count |> Number.toString }><{ "d" }><{ roll.dice.sides |> Number.toString }>
-                  <{ " [" }>
-                  <{ roll.results |> Array.map(Number.toString) |> String.join(", ") }>
-                  <{ "]" }>
-                </>
+                  <{ renderDie(roll) }>
               }
-            </>
+            </span>
+          </>
         }
       }
     </>
