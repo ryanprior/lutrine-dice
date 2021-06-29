@@ -18,4 +18,8 @@ module Roll {
       Result::Err(error)
     }
   }
+
+  fun total(rolls : Array(Roll)) : Number {
+    rolls |> Array.sumBy((roll : Roll) : Number { roll.results |> Array.sum })
+  }
 }
