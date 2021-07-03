@@ -9,7 +9,7 @@ module Lutrine::Dice
     def roll
       return Roll.new dice: self, results: [count] if sides == 1
       Roll.new dice: self,
-               results: Array.new(count) { |_| Random.rand(1..sides) }
+               results: Array.new(count) { |_| Random::Secure.rand(1..sides) }
     end
   end
 
