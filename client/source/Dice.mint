@@ -20,6 +20,57 @@ module Roll {
   }
 
   fun total(rolls : Array(Roll)) : Number {
-    rolls |> Array.sumBy((roll : Roll) : Number { roll.results |> Array.sum })
+    rolls |> Array.sumBy((roll : Roll) { roll.dice.constant * (roll.results |> Array.sum) })
+  }
+}
+
+component DiceRoll {
+  property data : Roll
+  property showDice = true
+
+  style results {
+    display: inline-block;
+    background: #9F2D3A;
+    color: #FCF2EE;
+    border-radius: 0.25rem;
+    font-size: 14pt;
+    padding: 0px 3px 1px 3px;
+    margin: 0px 0.25rem;
+    vertical-align: baseline;
+  }
+
+  style part(constant : Number) {
+    line-height: 14pt;
+    &:not(:first-child)::before {
+      if(constant > 0) {
+        content: "+";
+        margin: 0px 0px 0px 0.125rem;
+      } else {
+        content: "-";
+        margin: 0px 0.125rem 0px 0.25rem;
+      }
+    }
+  }
+
+  fun render : Html {
+    <span::part(dice.constant) class="die roll">
+      <{ dice.count |> Number.toString }>
+      if (dice.sides > 1) {
+        <>
+          <{ "d" }>
+          <span class="sides">
+            <{ dice.sides |> Number.toString }>
+          </span>
+          if(showDice) {
+            <span::results>
+            <{ results |> Array.map(Number.toString) |> String.join(", ") }>
+            </span>
+          }
+        </>
+      }
+    </span>
+  } where {
+    results = data.results
+    dice = data.dice
   }
 }

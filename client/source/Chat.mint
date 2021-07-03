@@ -112,11 +112,27 @@ component Chat {
     jsonMessage = Json.stringify(messageObject)
   }
 
+  style chat {
+    width: 90ex;
+    background: #32373B;
+    border-radius: 0px 0px 0.5rem 0.5rem;
+    margin-bottom: 6rem;
+    min-height: 60%;
+    padding: 0.8rem 1rem 3rem 1rem;
+  }
+
   style messageInput {
     width: calc(100% - 0.6rem);
   }
+
+  style messages {
+    color: #EFF4E8;
+    list-style: none;
+    padding: 0px;
+  }
+
   fun render : Html {
-    <div>
+    <div::chat>
       <form onSubmit={ sendMessage }>
         <input::messageInput
           placeholder="ex: #{currentExample |> Maybe.withDefault("1d20")}"
@@ -125,8 +141,8 @@ component Chat {
           onInput={ updateMessage }
         />
       </form>
-      <ol>
-        for (msg of list) {
+      <ol::messages>
+        for (msg of Array.reverse(list)) {
           <li><Message data={msg} /></li>
         }
       </ol>

@@ -1,11 +1,11 @@
 component Main {
   style app {
-    justify-content: center;
+    justify-content: top;
     flex-direction: column;
     align-items: center;
     display: flex;
 
-    background-color: #282C34;
+    background-color: #4A5859;
     height: 100vh;
     width: 100vw;
 
@@ -15,7 +15,6 @@ component Main {
 
   fun render : Html {
     <div::app>
-      "Roll Dice"
       <Chat />
     </div>
   }

@@ -2,7 +2,7 @@
   "name": "lutrine-dice-client",
   "application": {
     "head": "assets/head.html",
-    "title": "client",
+    "title": "Lutrine Dice",
     "icon": "assets/favicon.png"
   },
   "external": {

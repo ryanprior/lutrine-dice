@@ -35,37 +35,25 @@ record Message {
 component Message {
   property data : Message
 
-  style results {
-      &::before {
-        content: "[";
-      }
-      &::after {
-        content: "]";
-      }
-  }
-
   style rolls {
-    margin: 0px 0.5rem;
-      & .roll:not(:first-child)::before {
-        content: "+";
-      }
+    line-height: 22pt;
   }
 
-  fun renderDie(roll : Roll) : Html {
-    <span class="die roll">
-      <{ roll.dice.count |> Number.toString }>
-      if (roll.dice.sides > 1) {
-        <>
-          <{ "d" }>
-          <span class="sides">
-            <{ roll.dice.sides |> Number.toString }>
-          </span>
-          <span::results>
-            <{ roll.results |> Array.map(Number.toString) |> String.join(", ") }>
-          </span>
-        </>
-      }
-    </span>
+  style total {
+    display: inline-block;
+    background: #F4B860;
+    color: #32373B;
+    border-radius: 0.25rem;
+    font-size: 14pt;
+    padding: 0px 3px 1px 3px;
+    margin: 0px 0.25rem;
+    vertical-align: baseline;
+    min-width: 1.5rem;
+    text-align: center;
+  }
+
+  fun complex(rolls : Array(Roll)) : Bool {
+    (rolls |> Array.size) > 1 || (rolls |> Array.any((roll : Roll) { roll.dice.count > 1 }))
   }
 
   fun render : Html {
@@ -76,11 +64,14 @@ component Message {
           Message.Part::Text(string) => <{ string }>
           Message.Part::Rolls(rolls) =>
           <>
-            <{ Roll.total(rolls) |> Number.toString }>
             <span::rolls>
               for (roll of rolls) {
-                  <{ renderDie(roll) }>
+                <DiceRoll data={roll} showDice={rolls |> complex} />
               }
+              if(rolls |> complex) {
+                <{ " = "}>
+              }
+            <span::total><{ "#{Roll.total(rolls) |> Number.toString }"}></span>
             </span>
           </>
         }
