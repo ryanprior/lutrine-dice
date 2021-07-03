@@ -14,10 +14,16 @@ module Message.Part {
   }
 
   fun fromObject(object : Object) : Result(Object.Error, Message.Part) {
-    `typeof #{object} === "string"
-       ? #{Result::Ok(Message.Part::Text(`#{object}`))}
-       : #{Message.Part.decodeRolls(object)}
-    ` as Result(Object.Error, Message.Part)
+    try {
+      type = Object.Decode.string(`typeof #{object}`)
+      if (type == "string") {
+        Result::Ok(Message.Part::Text(`#{object}`))
+      } else {
+        Message.Part.decodeRolls(object)
+      }
+    } catch Object.Error => error {
+      Result::Err(error)
+    }
   }
 }
 
