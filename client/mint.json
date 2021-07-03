@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "lutrine-dice-client",
   "application": {
     "head": "assets/head.html",
     "title": "client",
