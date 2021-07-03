@@ -7,6 +7,7 @@ module Lutrine::Dice
     include JSON::Serializable
 
     def roll
+      return Roll.new dice: self, results: [0] * count if sides < 1
       return Roll.new dice: self, results: [count] if sides == 1
       Roll.new dice: self,
                results: Array.new(count) { |_| Random::Secure.rand(1..sides) }
