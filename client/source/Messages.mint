@@ -9,9 +9,6 @@ store Messages {
           parts = action.message
         })
       }
-      message = {from = action.from, parts = action.message}
-      message |> Debug.log
-      next {}
     }
   }
 }
