@@ -35,10 +35,6 @@ record Message {
 component Message {
   property data : Message
 
-  style rolls {
-    line-height: 22pt;
-  }
-
   style total {
     display: inline-block;
     background: #F4B860;
@@ -52,30 +48,50 @@ component Message {
     text-align: center;
   }
 
+  style sender {
+    line-height: 22pt;
+    align-self: end;
+    padding: 0.125rem 0.5rem 0.125rem 0px;
+    border-bottom: 1px dotted #495057;
+    word-break: break-word;
+  }
+
+  style message {
+    line-height: 22pt;
+    align-self: end;
+    border-bottom: 1px dotted #495057;
+    padding: 0.125rem 0px;
+  }
+
+  style roll {
+    break-inside: avoid;
+    display: inline-block;
+  }
+
   fun complex(rolls : Array(Roll)) : Bool {
     (rolls |> Array.size) > 1 || (rolls |> Array.any((roll : Roll) { roll.dice.count > 1 }))
   }
 
   fun render : Html {
     <>
-      <{ data.from.name }> ": "
-      for (part of data.parts) {
-        case (part) {
-          Message.Part::Text(string) => <{ string }>
-          Message.Part::Rolls(rolls) =>
-          <>
-            <span::rolls>
+      <span::sender><{ data.from.name }></span>
+      <span::message>
+        for (part of data.parts) {
+          case (part) {
+            Message.Part::Text(string) => <{ string }>
+              Message.Part::Rolls(rolls) =>
+            <span::roll>
               for (roll of rolls) {
                 <DiceRoll data={roll} showDice={rolls |> complex} />
               }
               if(rolls |> complex) {
-                <{ " = "}>
+                  <{ " = "}>
               }
-            <span::total><{ "#{Roll.total(rolls) |> Number.toString }"}></span>
+              <span::total><{ Roll.total(rolls) |> Number.toString }></span>
             </span>
-          </>
+          }
         }
-      }
+      </span>
     </>
   }
 }

@@ -66,6 +66,13 @@ component Chat {
     color: #EFF4E8;
     list-style: none;
     padding: 0px;
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    grid-gap: 0px;
+  }
+
+  style message {
+    display: contents;
   }
 
   fun render : Html {
@@ -73,7 +80,7 @@ component Chat {
       <Chat.Input username={username} socket={socket} />
       <ol::messages>
         for (msg of Array.reverse(list)) {
-          <li><Message data={msg} /></li>
+          <li::message><Message data={msg} /></li>
         }
       </ol>
     </div>

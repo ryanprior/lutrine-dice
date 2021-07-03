@@ -6,8 +6,7 @@ component Main {
     display: flex;
 
     background-color: #4A5859;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
 
     font-family: Open Sans;
     font-weight: bold;
