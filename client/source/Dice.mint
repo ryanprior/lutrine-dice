@@ -55,7 +55,7 @@ component DiceRoll {
   fun render : Html {
     <span::part(dice.constant) class="die roll">
       <{ dice.count |> Number.toString }>
-      if (dice.sides > 1) {
+      if (dice.sides != 1) {
         <>
           <{ "d" }>
           <span class="sides">
