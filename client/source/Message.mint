@@ -73,8 +73,8 @@ component Message {
       <{ data.from.name }> ": "
       for (part of data.parts) {
         case (part) {
-          Message.Part::Text string => <{ string }>
-          Message.Part::Rolls rolls =>
+          Message.Part::Text(string) => <{ string }>
+          Message.Part::Rolls(rolls) =>
           <>
             <{ Roll.total(rolls) |> Number.toString }>
             <span::rolls>

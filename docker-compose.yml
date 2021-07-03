@@ -10,7 +10,7 @@ services:
     ports:
       - 3000:3000
   client:
-    image: mint
+    image: mintlang/mint
     volumes:
       - ./client:/opt/client
     working_dir: /opt/client

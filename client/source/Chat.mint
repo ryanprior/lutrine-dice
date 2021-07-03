@@ -66,7 +66,7 @@ component Chat {
       event |> Html.Event.preventDefault()
       /* send message to websocket */
       case (socket) {
-        Maybe::Just websocket => WebSocket.send(jsonMessage, websocket)
+        Maybe::Just(websocket) => WebSocket.send(jsonMessage, websocket)
         => next {  }
       }
       /* reset message to empty */
