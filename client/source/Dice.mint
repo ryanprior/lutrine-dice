@@ -31,9 +31,9 @@ component DiceRoll {
   style results {
     display: inline-block;
     background: #9F2D3A;
-    color: #FCF2EE;
     border-radius: 0.25rem;
     font-size: 14pt;
+    font-weight: bold;
     padding: 0px 3px 1px 3px;
     margin: 0px 0.25rem;
     vertical-align: baseline;

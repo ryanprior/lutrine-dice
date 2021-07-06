@@ -1,8 +1,9 @@
 component Chat {
   connect Messages exposing { list, update }
+  connect Theme exposing { theme }
+  connect Characters exposing { character }
 
   state socket : Maybe(WebSocket) = Maybe::Nothing
-  state username : String = "Gamer"
   state shouldConnect = true
 
   use Provider.WebSocket {
@@ -54,16 +55,15 @@ component Chat {
   }
 
   style chat {
-    width: 90ex;
-    background: #32373B;
-    border-radius: 0px 0px 0.5rem 0.5rem;
-    margin-bottom: 6rem;
-    min-height: 60%;
+    flex-grow: 1;
+    background-color: #{theme.chat.background};
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 0.8rem 1rem 3rem 1rem;
   }
 
   style messages {
-    color: #EFF4E8;
+    color: #{theme.chat.textColor};
     list-style: none;
     padding: 0px;
     display: grid;
@@ -73,16 +73,17 @@ component Chat {
 
   style message {
     display: contents;
+    word-break: break-word;
   }
 
   fun render : Html {
-    <div::chat>
-      <Chat.Input username={username} socket={socket} />
+    <section::chat>
+      <Chat.Input username={character.name} socket={socket} />
       <ol::messages>
         for (msg of Array.reverse(list)) {
           <li::message><Message data={msg} /></li>
         }
       </ol>
-    </div>
+    </section>
   }
 }

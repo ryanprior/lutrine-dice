@@ -1,19 +1,21 @@
 component Main {
+  connect Theme exposing { theme }
+
   style app {
+    height: 100vh;
+    width: 100vw;
     justify-content: top;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: stretch;
     display: flex;
 
-    background-color: #4A5859;
+    background-color: #{theme.interface.background};
     min-height: 100vh;
-
-    font-family: Open Sans;
-    font-weight: bold;
   }
 
   fun render : Html {
     <div::app>
+      <ConnectionSidebar />
       <Chat />
     </div>
   }
