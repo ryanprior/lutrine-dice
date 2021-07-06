@@ -41,8 +41,7 @@ component Message {
     color: #32373B;
     border-radius: 0.25rem;
     font-size: 14pt;
-    font-weight: bold;
-    padding: 0px 3px 1px 3px;
+    padding: 0px 3px 0px 3px;
     margin: 0px 0.25rem;
     vertical-align: baseline;
     min-width: 1.5rem;
@@ -67,6 +66,8 @@ component Message {
   style roll {
     break-inside: avoid;
     display: inline-block;
+    font-weight: bold;
+    font-variant-numeric: lining-nums;
   }
 
   fun complex(rolls : Array(Roll)) : Bool {
