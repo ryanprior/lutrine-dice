@@ -45,7 +45,7 @@ module Lutrine::Dice
       (digits)
     ).named :number
 
-    dice = (digits.named(:count) >> char('d') >> digits.named(:sides)).named :dice
+    dice = (digits.maybe.named(:count) >> char('d') >> digits.named(:sides)).named :dice
 
     value = dice | number
 
@@ -109,14 +109,14 @@ module Lutrine::Dice
     end
 
     private def self.build_dice(main, iter, source, sign)
-      kind, start, finish = iter.next_as_child_of(main)
-      count = source[start...finish].to_i32
-      kind, start, finish = iter.next_as_child_of(main)
+      _, start, finish = iter.next_as_child_of(main)
+      count = source[start...finish].to_i32? || 1
+      _, start, finish = iter.next_as_child_of(main)
       sides = source[start...finish].to_i32
 
       case {count, sides}
       when {Int32, Int32} then Dice.new count, sides, sign
-      else raise "Invalid Dice"
+      else raise NotImplementedError.new({count, sides})
       end
     end
   end
