@@ -49,7 +49,10 @@ module Lutrine::Dice
 
     value = dice | number
 
-    compound = (value >> (whitespace.maybe >> (char('+') | char('-')).named(:sign) ^ value).repeat).named :compound
+    compound = ((value >>
+                 (whitespace.maybe >> (char('+') | char('-')).named(:sign) ^ value)
+                   .repeat(1)
+                ) | dice).named :compound
 
     text = (~char('d') >> ~range('0', '9') >> any).repeat(1).named :text
 
