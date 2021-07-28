@@ -62,7 +62,7 @@ component CharacterList {
 
   fun render : Html {
     <div::characters>
-      <{"Your characters:"}>
+      "Your characters:"
       <ul>
         <{
           playerCharacters |> Array.mapWithIndex((character : Character, i : Number) : Html {
@@ -82,7 +82,7 @@ component CharacterList {
           })
         }>
       </ul>
-      <button onClick={handleNewCharacter}><{"+ character"}></button>
+      <button onClick={handleNewCharacter}>"+ character"</button>
     </div>
   }
 }
@@ -165,10 +165,10 @@ component CharacterListItem {
       if(current) {
         <{" (current)"}>
       } else {
-        <button onClick={select}><{"select"}></button>
+        <button onClick={select}>"select"</button>
       }
-      <button onClick={startEditing}><{"edit"}></button>
-      <button onClick={remove}><{"remove"}></button>
+      <button onClick={startEditing}>"edit"</button>
+      <button onClick={remove}>"remove"</button>
     </>
   }
 }

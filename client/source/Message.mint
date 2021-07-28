@@ -87,7 +87,7 @@ component Message {
                 <DiceRoll data={roll} showDice={rolls |> complex} />
               }
               if(rolls |> complex) {
-                  <{ " = "}>
+                " = "
               }
               <span::total><{ Roll.total(rolls) |> Number.toString }></span>
             </span>

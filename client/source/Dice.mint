@@ -53,16 +53,13 @@ component DiceRoll {
 
   fun render : Html {
     <span::part(dice.constant) class="die roll">
-      <{ dice.count |> Number.toString }>
+      "#{dice.count}"
       if (dice.sides != 1) {
         <>
-          <{ "d" }>
-          <span class="sides">
-            <{ dice.sides |> Number.toString }>
-          </span>
+          "d#{dice.sides}"
           if(showDice) {
             <span::results>
-            <{ results |> Array.map(Number.toString) |> String.join(", ") }>
+              <{ results |> Array.map(Number.toString) |> String.join(", ") }>
             </span>
           }
         </>
