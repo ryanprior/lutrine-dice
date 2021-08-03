@@ -1,20 +1,37 @@
 enum View {
   Welcome
-  Room(String)
+  Room(RoomKey)
+}
+
+record Room {
+  id: String,
+  name: String,
 }
 
 record RoomKey {
-  roomId: String,
-  key: String
+  room: Room,
+  key: String,
 }
 
 store Application {
   state view : View = View::Welcome
-  state roomKeys : Array(RoomKey) = []
+  state rooms : Array(RoomKey) = []
 
-  fun visit(view : View) {
+  fun visitWelcome {
     next {
-      view = view
+      view = View::Welcome
+    }
+  }
+
+  fun visitRoom(id : String) {
+    sequence {
+      room = rooms |> Array.find((key : RoomKey) : Bool { key.room.id == id })
+      case (room) {
+        Maybe::Just(room) => next {
+          view = View::Room(room)
+        }
+          => next {}
+      }
     }
   }
 
@@ -30,9 +47,9 @@ store Application {
       object =
         Json.parse(data)
         |> Maybe.toResult("")
-      keys = decode object as Array(RoomKey)
+      loadedRooms = decode object as Array(RoomKey)
       next {
-        roomKeys = keys
+        rooms = loadedRooms
       }
     } catch Storage.Error => error {
       sequence {
@@ -51,16 +68,16 @@ store Application {
 
   fun saveKeys {
     try {
-      data = (encode roomKeys) |> Json.stringify
+      data = (encode rooms) |> Json.stringify
       Storage.Local.set("room-keys", data)
     }
   }
 
 
-  fun acceptInvite(id: String, key: String) {
+  fun acceptInvite(key: RoomKey) {
     try {
       next {
-        roomKeys = roomKeys |> Array.push({roomId=id, key=key})
+        rooms = rooms |> Array.push(key)
       }
       saveKeys()
     }

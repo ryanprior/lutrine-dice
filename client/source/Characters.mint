@@ -45,11 +45,12 @@ store Characters {
 
 component CharacterList {
   connect Characters exposing { playerCharacters, index, rename, select, add, remove }
+  connect Theme exposing { theme }
 
   style characters {
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 0.33em;
-    padding: 6px;
+    background-color: #{theme.section.background};
+    border-radius: #{theme.section.radius};
+    padding: #{theme.section.gutter};
   }
 
   fun handleNewCharacter(event : Html.Event) {

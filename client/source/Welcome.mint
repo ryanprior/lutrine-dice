@@ -1,20 +1,21 @@
 component Welcome {
   connect Theme exposing { theme }
+  connect Application exposing { rooms }
 
-  style app {
+  style welcome {
     min-width: 18rem;
-    min-height: 38rem;
-    color: #{theme.interface.textColor};
-    background: #{theme.interface.background};
-    border: 1px solid rgba(255,255,255,0.6);
-    border-radius: 1rem;
+    margin: #{theme.section.gutter};
+    color: #{theme.section.textColor};
+    background: #{theme.section.background};
+    border-radius: #{theme.section.radius};
     padding: 1.5rem;
   }
 
   fun render : Html {
-    <div::app>
-      "Hello!"
-      <a href="room/test">"Enter test room"</a>
+    <div::welcome>
+      "Welcome to Lutrine Dice!"
+      <br />
+      <Rooms data={rooms} />
     </div>
   }
 }

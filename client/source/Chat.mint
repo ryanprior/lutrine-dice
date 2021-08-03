@@ -1,13 +1,16 @@
 component Chat {
+  connect Api exposing { endpoint }
   connect Messages exposing { list, update }
   connect Theme exposing { theme }
   connect Characters exposing { character }
 
+  property room : String
+  property roomKey : String
   state socket : Maybe(WebSocket) = Maybe::Nothing
   state shouldConnect = true
 
   use Provider.WebSocket {
-    url = "ws://localhost:3000/chat",
+    url = "ws://#{endpoint}/chat/#{room}?key=#{roomKey}",
     reconnectOnClose = true,
     onMessage = handleMessage,
     onError = handleError,

@@ -2,25 +2,25 @@ routes {
   / {
     sequence {
       Application.initialize()
-      Application.visit(View::Welcome)
+      Application.visitWelcome()
     }
   }
 
-  /room/:id?key=:key (id: String, key: String) {
+  /room/:id-:name?key=:key (id: String, name: String, key: String) {
     try {
       Application.initialize()
-      Application.acceptInvite(id, key)
-      Window.navigate("/room/#{id}")
+      Application.acceptInvite({room = {id = id, name = name}, key = key})
+      Window.navigate("/room/#{id}-#{name}")
       Result::Ok(id)
     } catch Storage.Error => error {
       Result::Err(error)
     }
   }
 
-  /room/:id (id: String) {
+  /room/:id-:name (id: String, name: String) {
     sequence {
       Application.initialize()
-      Application.visit(View::Room(id))
+      Application.visitRoom(id)
     }
   }
 }
@@ -45,10 +45,10 @@ component Main {
     <div::app>
       case (view) {
         View::Welcome => <Welcome />
-        View::Room(id) =>
+        View::Room(place) =>
           <>
             <ConnectionSidebar />
-            <Chat room={id} />
+            <Chat room={place.room.id} roomKey={Debug.log(place.key)} />
           </>
       }
     </div>
