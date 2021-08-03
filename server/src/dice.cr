@@ -1,38 +1,7 @@
 require "pegmatite"
-require "json"
+require "./models/dice"
 
 module Lutrine::Dice
-
-  record Dice, count : Int32, sides : Int32, constant : Int32 do
-    include JSON::Serializable
-
-    def roll
-      return Roll.new dice: self, results: [0] * count if sides < 1
-      return Roll.new dice: self, results: [count] if sides == 1
-      Roll.new dice: self,
-               results: Array.new(count) { |_| Random::Secure.rand(1..sides) }
-    end
-  end
-
-  record Roll, dice : Dice, results : Array(Int32) do
-    include JSON::Serializable
-  end
-
-  record Message, parts : Array(String | Array(Roll)) do
-    include JSON::Serializable
-
-    def self.from_string(message)
-      msg = Reader.read message
-      new(msg.map do |part|
-        case part
-        when Array(Dice)
-          part.map(&.roll)
-        else
-          part
-        end
-      end)
-    end
-  end
 
   Grammar = Pegmatite::DSL.define do
     whitespace = (char(' ') | char('\t')).repeat
@@ -41,24 +10,25 @@ module Lutrine::Dice
     digit = range('0', '9')
     digits = digit.repeat(1)
     number = (
-      (char('-') >> digits) |
-      (digits)
+      (char('-') >> digits) \
+      | digits
     ).named :number
 
-    dice = (digits.maybe.named(:count) >> char('d') >> digits.named(:sides)).named :dice
+    d = char('d') | char('D')
+    dice = (digits.maybe.named(:count) >> d >> digits.named(:sides)).named :dice
 
     value = dice | number
+    sign = char('+') | char('-')
 
-    compound = ((value >>
-                 (whitespace.maybe >> (char('+') | char('-')).named(:sign) ^ value)
-                   .repeat(1)
-                ) | dice).named :compound
+    compound = ((value >> (whitespace.maybe >> sign.named(:sign) ^ value).repeat(1)) \
+                | dice
+               ).named :compound
 
-    text = (~char('d') >> ~range('0', '9') >> any).repeat(1).named :text
+    text = (~d >> ~digit >> any).repeat(1).named :text
 
     message = (
       text.maybe >> (
-        compound | (char('d') | range('0', '9')).named(:text)).maybe
+        compound | (d | digit).named(:text)).maybe
     ).repeat.named :message
 
     message.then_eof

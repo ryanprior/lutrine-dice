@@ -7,13 +7,17 @@ authors:
 
 targets:
   server:
-    main: src/server.cr
+    main: src/main.cr
 
 dependencies:
+  db:
+    github: crystal-lang/crystal-db
   kemal:
     github: kemalcr/kemal
   pegmatite:
     github: jemc/crystal-pegmatite
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
 
 crystal: 1.0.0
 
