@@ -2,11 +2,17 @@ version: '3'
 
 services:
   server:
-    image: crystallang/crystal:1.0.0-alpine
+    image: ryanprior/lutrine-dice-crystal:1.1.0-alpine
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    environment:
+      DIST_DIR: /opt/server/public
     volumes:
       - ./server:/opt/server
+      - ./client/dist:/opt/server/public
     working_dir: /opt/server
-    command: crystal run src/server.cr -- --bind 0.0.0.0
+    command: crystal run src/main.cr -- --bind 0.0.0.0
     ports:
       - 3000:3000
   client:
