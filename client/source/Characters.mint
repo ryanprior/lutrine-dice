@@ -11,7 +11,7 @@ store Characters {
 
   get character : Character {
     Array.at(index, playerCharacters)
-      |> Maybe.withDefault({name = "[no name]"})
+      |> Maybe.withDefault({name = "[nobody]"})
   }
 
   fun select(i : Number) {
@@ -26,9 +26,16 @@ store Characters {
     }
   }
 
-  fun remove(index : Number) {
-    next {
-      playerCharacters = playerCharacters |> Array.deleteAt(index)
+  fun remove(position : Number) {
+    sequence {
+      if (index >= position && index > 0) {
+        next {
+          index = index - 1
+        }
+      } else { next {}}
+      next {
+        playerCharacters = playerCharacters |> Array.deleteAt(position)
+      }
     }
   }
 
