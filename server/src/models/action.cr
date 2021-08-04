@@ -1,19 +1,15 @@
-# TODO write documentation for `Command`
-
 require "./dice"
 require "json"
 
-module Lutrine
+module Lutrine::Server
   record Actor, name : String do
     include JSON::Serializable
   end
 
   abstract class Action
     include JSON::Serializable
-
-    use_json_discriminator "type", {message: MessageAction}
-
     property type : String
+    use_json_discriminator "type", {message: MessageAction}
   end
 
   class MessageAction < Action

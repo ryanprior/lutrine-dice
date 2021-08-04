@@ -1,4 +1,5 @@
 require "json"
+require "../dice"
 
 module Lutrine::Dice
 
@@ -21,7 +22,7 @@ module Lutrine::Dice
     include JSON::Serializable
 
     def self.from_string(message)
-      msg = Reader.read message
+      msg = Lutrine::Dice::Reader.read message
       new(msg.map do |part|
             case part
             when Array(Dice)

@@ -23,9 +23,7 @@ module Lutrine::Server
                FOREIGN KEY (room_id) REFERENCES rooms (id)
         )
         SQL
-      db.exec <<-'SQL'
-        CREATE INDEX IF NOT EXISTS "room_key_idx" on room_keys (key)
-        SQL
+      db.exec %|CREATE INDEX IF NOT EXISTS "room_key_idx" ON room_keys (key)|
     end
 
     def key_valid?(key : String, db)

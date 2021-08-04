@@ -1,5 +1,6 @@
 require "../base58"
 require "./room"
+require "./memo"
 require "db"
 require "kemal"
 require "sqlite3"
@@ -16,6 +17,7 @@ module Lutrine::Server
     def self.load
       DB.open DB_FILE do |db|
         Room.init_schema db
+        Memo::Message.init_schema db
         new connections: Hash(HTTP::WebSocket, Connection).new, rooms: Hash(String, Room).new
       end
     end
@@ -50,8 +52,15 @@ module Lutrine::Server
       end
     end
 
-    def broadcast(message, room_id)
+    def broadcast(message, room_id, from)
       connections.values.select(&.room.id.== room_id).each(&.socket.send message)
+      enter do |db|
+        memo = Server::Memo::Message.new id: nil,
+                                         room_id: room_id,
+                                         from: from,
+                                         message: message
+        memo.save(db)
+      end
     end
 
     def disconnect(socket)
