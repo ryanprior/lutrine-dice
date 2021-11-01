@@ -1,5 +1,5 @@
 component Chat {
-  connect Api exposing { endpoint }
+  connect Api exposing { ws }
   connect Messages exposing { list, update }
   connect Theme exposing { theme }
   connect Characters exposing { character }
@@ -10,7 +10,7 @@ component Chat {
   state shouldConnect = true
 
   use Provider.WebSocket {
-    url = "ws://#{endpoint}/chat/#{room}?key=#{roomKey}",
+    url = "#{ws}/chat/#{room}?key=#{roomKey}",
     reconnectOnClose = true,
     onMessage = handleMessage,
     onError = handleError,
@@ -79,7 +79,7 @@ component Chat {
     word-break: break-word;
   }
 
-  fun render : Html {
+  fun render {
     <section::chat>
       <Chat.Input username={character.name} socket={socket} />
       <ol::messages>

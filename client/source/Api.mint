@@ -2,12 +2,24 @@ store Api {
   state endpoint = "localhost:3000"
   state secure = false
 
+  get wsProtocol {
+    if(secure) {
+      "wss"
+    } else {
+      "ws"
+    }
+  }
+
   get protocol {
     if(secure) {
       "https"
     } else {
       "http"
     }
+  }
+
+  get ws {
+    "#{wsProtocol}://#{endpoint}"
   }
 
   get base {
