@@ -42,6 +42,23 @@ component Top {
     }
   }
 
+  fun handleInvite(event : Html.Event) {
+    sequence {
+      event |> Html.Event.preventDefault
+      response = case(view) {
+        View::Room(roomKey) => Api.createInvite(roomKey.room.id)
+          => `console.log('not in a room')` as Promise(Http.ErrorResponse, Http.Response)
+      }
+      Debug.log("got new key: #{response.body}")
+      Result::Ok(response.body)
+    } catch Http.ErrorResponse => error {
+      try {
+        Debug.log(error)
+        Result::Err(error)
+      }
+    }
+  }
+
   fun render {
     <section::top-navigation>
       <a::logo href="/">"Lutrine Dice"</a>
@@ -52,7 +69,7 @@ component Top {
           View::Room(place) => place.room.name
         }
       </span>
-      <span::invite><a href="#">"invite players"</a></span>
+      <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
     </section>
   }
 }
