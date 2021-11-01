@@ -46,6 +46,7 @@ component Main {
       case (view) {
         View::Welcome => <Welcome />
         View::Room(place) =>
+      <Top />
           <>
             <ConnectionSidebar />
             <Chat room={place.room.id} roomKey={Debug.log(place.key)} />
