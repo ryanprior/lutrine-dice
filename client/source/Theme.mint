@@ -12,6 +12,13 @@ record Theme {
 }
 
 store Theme {
+  state navigation : Theme.Section = {
+    background = "rgb(27, 27, 27)",
+    textColor = "white",
+    gutter = "4px",
+    radius = "0px",
+  }
+
   state theme : Theme = {
     interface = {
       background = "#4A5859",
