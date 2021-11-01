@@ -11,10 +11,8 @@ component Welcome {
     padding: 1.5rem;
   }
 
-  fun render : Html {
+  fun render {
     <div::welcome>
-      "Welcome to Lutrine Dice!"
-      <br />
       <Rooms data={rooms} />
     </div>
   }
