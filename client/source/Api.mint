@@ -32,4 +32,11 @@ store Api {
       |> Http.jsonBody(encode {name = Debug.log(name)})
       |> Http.send
   }
+
+  fun createInvite(roomId : String) {
+    "#{base}/api/room/#{roomId}/invite"
+      |> Http.post
+      |> Application.authRoom
+      |> Http.send
+  }
 }
