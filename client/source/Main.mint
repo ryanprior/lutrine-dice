@@ -30,28 +30,30 @@ component Main {
   connect Application exposing { view }
 
   style app {
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    background-color: #{theme.interface.background};
+  }
+
+  style columns {
     justify-content: top;
     flex-direction: row;
     align-items: stretch;
     display: flex;
-
-    background-color: #{theme.interface.background};
-    min-height: 100vh;
   }
 
   fun render {
     <div::app>
-      case (view) {
-        View::Welcome => <Welcome />
-        View::Room(place) =>
       <Top />
+      <section::columns>
+        case (view) {
+          View::Welcome => <Welcome />
+          View::Room(place) =>
           <>
             <ConnectionSidebar />
             <Chat room={place.room.id} roomKey={Debug.log(place.key)} />
           </>
-      }
+        }
+      </section>
     </div>
   }
 }
