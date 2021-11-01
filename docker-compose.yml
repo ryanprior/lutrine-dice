@@ -8,8 +8,10 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       DIST_DIR: /opt/server/public
+      LUTRINE_DB: sqlite3:/var/data/lutrine-dice.db
     volumes:
       - ./server:/opt/server
+      - ./lutrine-dice.db:/var/data/lutrine-dice.db
       - ./client/dist:/opt/server/public
     working_dir: /opt/server
     command: crystal run src/main.cr -- --bind 0.0.0.0
