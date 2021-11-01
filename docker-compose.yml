@@ -7,6 +7,7 @@ services:
       context: ./server
       dockerfile: Dockerfile.dev
     environment:
+      LUTRINE_ENV: local
       DIST_DIR: /opt/server/public
       LUTRINE_DB: sqlite3:/var/data/lutrine-dice.db
     volumes:
