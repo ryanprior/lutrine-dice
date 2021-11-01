@@ -1,6 +1,5 @@
 # TODO write documentation for `Server`
 
-require "./base58"
 require "./flags"
 require "./models/action"
 require "./models/room"
