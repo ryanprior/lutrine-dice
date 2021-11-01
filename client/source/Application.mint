@@ -35,6 +35,15 @@ store Application {
     }
   }
 
+  fun authRoom(request : Http.Request) : Http.Request {
+    try {
+      case (view) {
+        View::Room(room) => Http.header("Authorization", "Bearer #{room.key}", request)
+        => request
+      }
+    }
+  }
+
   fun initialize {
     sequence {
       loadKeys()
