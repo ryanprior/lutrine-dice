@@ -34,13 +34,13 @@ component Chat.Input {
     socket |> Maybe.isNothing
   }
 
-  fun componentDidMount() : Promise(Never, Void) {
+  fun componentDidMount {
     next {
       currentExample = Array.sample(examples)
     }
   }
 
-  fun sendMessage(event: Html.Event) : Promise(Never, Void) {
+  fun sendMessage(event: Html.Event) {
     sequence {
       event |> Html.Event.preventDefault()
       case (socket) {
@@ -70,13 +70,13 @@ component Chat.Input {
     width: calc(100% - 0.6rem);
   }
 
-  fun updateMessage(event: Html.Event) : Promise(Never, Void) {
+  fun updateMessage(event: Html.Event) {
     next {
       message = Dom.getValue(event.target)
     }
   }
 
-  fun render : Html {
+  fun render {
     <form onSubmit={ sendMessage }>
       <input::messageInput
         placeholder="ex: #{currentExample |> Maybe.withDefault("1d20")}"

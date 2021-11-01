@@ -8,7 +8,7 @@ component ConnectionSidebar {
     color: #{theme.interface.textColor};
   }
 
-  fun render() : Html {
+  fun render {
     <section::bar>
       <CharacterList />
     </section>

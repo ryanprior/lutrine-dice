@@ -20,7 +20,7 @@ component Chat {
     shouldConnect
   }
 
-  fun handleMessage(data: String) : Promise(Never, Void) {
+  fun handleMessage(data: String) {
     try {
       object = Json.parse(data) |> Maybe.toResult("Decode Error")
       action = MessageAction.In.fromJSON(object)
@@ -41,12 +41,12 @@ component Chat {
     }
   }
 
-  fun handleError : Promise(Never, Void) {
+  fun handleError {
     sequence {
       void
     }
   }
-  fun handleClose : Promise(Never, Void) {
+  fun handleClose {
     next {
       socket = Maybe::Nothing
     }

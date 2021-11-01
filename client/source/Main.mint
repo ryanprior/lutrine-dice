@@ -41,7 +41,7 @@ component Main {
     min-height: 100vh;
   }
 
-  fun render : Html {
+  fun render {
     <div::app>
       case (view) {
         View::Welcome => <Welcome />

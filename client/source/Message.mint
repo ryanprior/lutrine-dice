@@ -74,7 +74,7 @@ component Message {
     (rolls |> Array.size) > 1 || (rolls |> Array.any((roll : Roll) { roll.dice.count > 1 }))
   }
 
-  fun render : Html {
+  fun render {
     <>
       <span::sender><{ data.from.name }></span>
       <span::message>
