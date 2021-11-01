@@ -85,7 +85,7 @@ component Rooms {
     }
   }
 
-  fun render : Html {
+  fun render {
     <div::rooms>
       "Join a room"
       <ul>

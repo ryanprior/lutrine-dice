@@ -14,7 +14,7 @@ store Api {
     "#{protocol}://#{endpoint}"
   }
 
-  fun createRoom(name : String) : Promise(Http.ErrorResponse, Http.Response) {
+  fun createRoom(name : String) {
     "#{base}/api/room"
       |> Http.post
       |> Http.jsonBody(encode {name = Debug.log(name)})

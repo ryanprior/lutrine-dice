@@ -149,7 +149,7 @@ store Messages {
       }
     ]
 
-  fun update (action : MessageAction.In) : Promise(Never, Void) {
+  fun update (action : MessageAction.In) {
     sequence {
       next
         {

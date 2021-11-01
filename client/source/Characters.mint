@@ -68,7 +68,7 @@ component CharacterList {
     remove(index)
   }
 
-  fun render : Html {
+  fun render {
     <div::characters>
       "Your characters:"
       <ul>
@@ -110,7 +110,7 @@ component CharacterListItem {
     Maybe.isJust(newName)
   }
 
-  fun handleEscape(event : Html.Event) : Promise(Never, Void) {
+  fun handleEscape(event : Html.Event) {
     case (event.key) {
       "Escape" => doneEditing(false, event)
         => next {}
@@ -161,7 +161,7 @@ component CharacterListItem {
     }
   }
 
-  fun render : Html {
+  fun render {
     <>
       <form::nameInput onSubmit={doneEditing(true)}>
         <input as input
