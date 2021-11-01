@@ -28,6 +28,24 @@ post "/api/room" do |env|
   {room: room, key: key}.to_json
 end
 
+options "/api/room/:id/invite" do |env|
+  add_cors_headers env
+end
+
+post "/api/room/:id/invite" do |env|
+  id = env.params.url["id"]
+  token = env.request.headers["Authorization"].split[1]
+  p! token
+  room = WORLD.room(id) || halt(env, status_code: 404, response: "Room not found")
+  WORLD.enter do |db|
+    halt(env, status_code: 403, response: "Forbidden") unless room.key_valid? token, db
+    key = room.create_key db
+    add_cors_headers env
+    env.response.content_type = "application/json"
+    {room: room, key: key}.to_json
+  end
+end
+
 ws "/chat/:id" do |socket, ctx|
   room_id = ctx.ws_route_lookup.params["id"]
   key = ctx.request.query_params["key"]
