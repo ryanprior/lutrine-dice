@@ -41,7 +41,7 @@ ws "/chat/:id" do |socket, ctx|
   WORLD.add_connection socket, room_id
 
   socket.on_message do |message|
-    p! message
+    Log.info { message }
     action = Server::Action.from_json message
     case action
     when Server::MessageAction
