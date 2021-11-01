@@ -1,6 +1,7 @@
 # TODO write documentation for `Server`
 
 require "./base58"
+require "./flags"
 require "./models/action"
 require "./models/room"
 require "./models/world"
@@ -11,6 +12,7 @@ include Lutrine
 WORLD = Server::World.load
 
 def add_cors_headers(env)
+  return unless Lutrine::Flags.allow_cors?
   env.response.headers.add("Access-Control-Allow-Origin", "*")
   env.response.headers.add("Access-Control-Allow-Headers", "*")
 end
