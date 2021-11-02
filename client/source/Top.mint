@@ -70,6 +70,7 @@ component Top {
         }
       </span>
       <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
+    <Floaty show={false}>"testing! lots more text! https://some.url/more-text"</Floaty>
     </section>
   }
 }
