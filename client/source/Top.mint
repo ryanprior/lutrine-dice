@@ -1,6 +1,9 @@
 component Top {
   connect Theme exposing { navigation }
   connect Application exposing { view }
+  connect Api exposing { base }
+
+  state currentInvite : Maybe(String) = Maybe::Nothing
 
   style top-navigation {
     height: 1.5rem;
@@ -42,6 +45,12 @@ component Top {
     }
   }
 
+  style invite-link {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid #9e90a2;
+    width: 30rem;
+  }
+
   fun handleInvite(event : Html.Event) {
     sequence {
       event |> Html.Event.preventDefault
@@ -49,13 +58,32 @@ component Top {
         View::Room(roomKey) => Api.createInvite(roomKey.room.id)
           => `console.log('not in a room')` as Promise(Http.ErrorResponse, Http.Response)
       }
-      Debug.log("got new key: #{response.body}")
+      object = Json.parse(response.body)
+        |> Maybe.toResult("")
+      data = decode object as RoomKey
+      next {
+        currentInvite = Maybe::Just("#{base}/room/#{data.room.id}-#{data.room.name}?key=#{data.key}")
+      }
       Result::Ok(response.body)
     } catch Http.ErrorResponse => error {
       try {
         Debug.log(error)
         Result::Err(error)
       }
+    } catch Object.Error => error {
+      try {
+        Debug.log(error)
+        Result::Err(error)
+      }
+    } catch String => error {
+      Result::Err(error)
+    }
+  }
+
+  fun highlightInviteInput {
+    case(inviteInput) {
+      Maybe::Just(element) => `#{element}.select()`
+        => next {}
     }
   }
 
@@ -70,7 +98,17 @@ component Top {
         }
       </span>
       <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
-    <Floaty show={false}>"testing! lots more text! https://some.url/more-text"</Floaty>
+    <Floaty show={Maybe.isJust(currentInvite)}
+            onClose={(event : Html.Event) {
+              next {currentInvite = Maybe::Nothing}
+            }}>
+      <input::invite-link as inviteInput
+      type="text"
+      readonly={true}
+      onClick={highlightInviteInput}
+      value={Maybe.withDefault("", currentInvite)}
+      />
+    </Floaty>
     </section>
   }
 }
