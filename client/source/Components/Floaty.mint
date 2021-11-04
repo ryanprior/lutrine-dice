@@ -1,6 +1,7 @@
 component Floaty {
   property children : Array(Html) = []
   property show = true
+  property onClose : Function(Html.Event, Promise(Never, Void)) = (event : Html.Event) { next {} }
 
   style outer {
     position: relative;
@@ -71,10 +72,17 @@ component Floaty {
     }
   }
 
+  style close {
+    color: #6d597a;
+    margin-left: 8px;
+    cursor: pointer;
+  }
+
   fun render {
     <div::outer>
       <div::main>
         <{ children }>
+        <span::close title="Close" onClick={onClose}>"☒"</span>
       </div>
     </div>
   }
