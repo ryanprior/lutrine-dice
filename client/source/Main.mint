@@ -32,6 +32,8 @@ component Main {
   style app {
     min-height: 100vh;
     background-color: #{theme.interface.background};
+    display: flex;
+    flex-direction: column;
   }
 
   style columns {
@@ -39,6 +41,7 @@ component Main {
     flex-direction: row;
     align-items: stretch;
     display: flex;
+    flex-grow: 1;
   }
 
   fun render {
