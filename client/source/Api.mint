@@ -29,7 +29,7 @@ store Api {
   fun createRoom(name : String) {
     "#{base}/api/room"
       |> Http.post
-      |> Http.jsonBody(encode {name = Debug.log(name)})
+      |> Http.jsonBody(encode {name = name})
       |> Http.send
   }
 
