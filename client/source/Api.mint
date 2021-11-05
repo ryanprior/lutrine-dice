@@ -1,6 +1,6 @@
 store Api {
   state endpoint = "localhost:3000"
-  state secure = false
+  state secure = `window.location.protocol === "https:"` as Bool
 
   get wsProtocol {
     if(secure) {
