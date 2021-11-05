@@ -161,6 +161,25 @@ component CharacterListItem {
     }
   }
 
+  style imageButton {
+    background: rgba(255,255,255,0.2);
+    width: 1.2em;
+    height: 1.2em;
+    display: inline-block;
+    line-height: 1em;
+    vertical-align: baseline;
+    text-align: center;
+    padding: 1px;
+    margin: 0px 1px;
+    border-radius: 6px;
+    color: white;
+    user-select: none;
+    text-decoration: none;
+      &:visited {
+        color: white;
+      }
+  }
+
   fun render {
     <>
       <form::nameInput onSubmit={doneEditing(true)}>
@@ -171,12 +190,12 @@ component CharacterListItem {
       </form>
       <{ data.name }>
       if(current) {
-        <{" (current)"}>
+        <>"￩"</>
       } else {
-        <button onClick={select}>"select"</button>
+        <a::imageButton href="#" title="play as #{data.name}" onClick={select}>"▶"</a>
       }
-      <button onClick={startEditing}>"edit"</button>
-      <button onClick={remove}>"remove"</button>
+      <a::imageButton href="#" title="edit" onClick={startEditing}>"🖉"</a>
+      <a::imageButton href="#" title="remove" onClick={remove}><span>"✖"</span></a>
     </>
   }
 }
