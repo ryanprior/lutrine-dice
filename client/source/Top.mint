@@ -1,7 +1,7 @@
 component Top {
   connect Theme exposing { navigation }
   connect Application exposing { view }
-  connect Api exposing { base }
+  connect Api exposing { protocol }
 
   state currentInvite : Maybe(String) = Maybe::Nothing
 
@@ -62,7 +62,7 @@ component Top {
         |> Maybe.toResult("")
       data = decode object as RoomKey
       next {
-        currentInvite = Maybe::Just("#{base}/room/#{data.room.id}-#{data.room.name}?key=#{data.key}")
+        currentInvite = Maybe::Just("#{protocol}://#{`window.location.host`}/room/#{data.room.id}-#{data.room.name}?key=#{data.key}")
       }
       Result::Ok(response.body)
     } catch Http.ErrorResponse => error {
