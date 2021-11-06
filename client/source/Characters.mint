@@ -74,19 +74,17 @@ component CharacterList {
       <ul>
         <{
           playerCharacters |> Array.mapWithIndex((character : Character, i : Number) : Html {
-            <li>
-              <CharacterListItem
-                current={i == index}
-                data={character}
-                rename={rename(i)}
-                remove={handleRemoveCharacter(i)}
-                select={(event : Html.Event) {
-                  sequence {
-                    event |> Html.Event.preventDefault
-                    select(i)
-                  }
-                }} />
-            </li>
+            <CharacterListItem
+              current={i == index}
+              data={character}
+              rename={rename(i)}
+              remove={handleRemoveCharacter(i)}
+              select={(event : Html.Event) {
+                sequence {
+                  event |> Html.Event.preventDefault
+                  select(i)
+                }
+              }} />
           })
         }>
       </ul>
@@ -180,8 +178,20 @@ component CharacterListItem {
       }
   }
 
+  style item(active : Bool) {
+    if(!active) {
+      list-style: none;
+    }
+  }
+
+  style show(active : Bool) {
+    if(!active) {
+      visibility: hidden;
+    }
+  }
+
   fun render {
-    <>
+    <li::item(current)>
       <form::nameInput onSubmit={doneEditing(true)}>
         <input as input
                value={newName |> Maybe.withDefault("")}
@@ -189,13 +199,9 @@ component CharacterListItem {
         <input type="submit" value="Done" />
       </form>
       <{ data.name }>
-      if(current) {
-        <>"￩"</>
-      } else {
-        <a::imageButton href="#" title="play as #{data.name}" onClick={select}>"▶"</a>
-      }
+      <a::imageButton::show(!current) href="#" title="play as #{data.name}" onClick={select}>"▶"</a>
       <a::imageButton href="#" title="edit" onClick={startEditing}>"🖉"</a>
       <a::imageButton href="#" title="remove" onClick={remove}><span>"✖"</span></a>
-    </>
+    </li>
   }
 }
