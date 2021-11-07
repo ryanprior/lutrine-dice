@@ -4,6 +4,7 @@ require "./flags"
 require "./models/action"
 require "./models/room"
 require "./models/world"
+require "./models/memo"
 require "kemal"
 
 include Lutrine
@@ -35,7 +36,6 @@ end
 post "/api/room/:id/invite" do |env|
   id = env.params.url["id"]
   token = env.request.headers["Authorization"].split[1]
-  p! token
   room = WORLD.room(id) || halt(env, status_code: 404, response: "Room not found")
   WORLD.enter do |db|
     halt(env, status_code: 403, response: "Forbidden") unless room.key_valid? token, db
@@ -43,6 +43,25 @@ post "/api/room/:id/invite" do |env|
     add_cors_headers env
     env.response.content_type = "application/json"
     {room: room, key: key}.to_json
+  end
+end
+
+options "/api/room/:id/history" do |env|
+  add_cors_headers env
+end
+
+get "/api/room/:id/history" do |env|
+  id = env.params.url["id"]
+  auth_header = env.request.headers["Authorization"] || halt(env, status_code: 401, response: "Unauthorized")
+  token = auth_header.split[1]
+  since = env.params.url.fetch("since", "0")
+  room = WORLD.room(id) || halt(env, status_code: 404, response: "Room not found")
+  WORLD.enter do |db|
+    halt(env, status_code: 403, response: "Forbidden") unless room.key_valid? token, db
+    messages = Server::Memo.messages_for id, since, db
+    add_cors_headers env
+    env.response.content_type = "application/json"
+    messages.to_json
   end
 end
 
