@@ -5,3 +5,6 @@ watch-server:
 
 dev-server:
 	docker-compose up server
+
+destroy-db:
+	:>lutrine-dice.db
