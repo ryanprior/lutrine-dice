@@ -1,9 +1,11 @@
 require "db"
+require "json"
 require "./action"
 
 module Lutrine::Server::Memo
   record Message, id : Int64?, room_id : String, from : String, message : String do
     include DB::Serializable
+    include JSON::Serializable
 
     def self.init_schema(db)
       db.exec <<-'SQL'
@@ -12,10 +14,12 @@ module Lutrine::Server::Memo
                "room_id" TEXT NOT NULL,
                "from" TEXT NOT NULL,
                "message" TEXT NOT NULL,
+               "time" DATETIME DEFAULT CURRENT_TIMESTAMP,
                FOREIGN KEY (room_id) REFERENCES rooms (id)
         )
         SQL
       db.exec %|CREATE INDEX IF NOT EXISTS "room_messages_idx" ON messages (room_id)|
+      db.exec %|CREATE INDEX IF NOT EXISTS "room_messages_when" ON messages (time)|
     end
 
     def save(db)
@@ -34,13 +38,15 @@ module Lutrine::Server::Memo
     end
   end
 
-  def self.messages_for(room_id : String, db, limit = 1000)
+  def self.messages_for(room_id : String, since : String, db, limit = 1000)
     messages = Array(Message).new
-    db.query <<-'SQL', room_id, limit do |result|
+    db.query <<-'SQL', room_id, since, limit do |result|
       SELECT "from", "message", "room_id"
-        FROM messages
-        WHERE room_id = ?
-        LIMIT ?
+            FROM messages
+           WHERE room_id = ?
+             AND datetime(?) < time
+        ORDER BY time DESC
+           LIMIT ?
       SQL
       result.each do
         messages << result.read(Message)

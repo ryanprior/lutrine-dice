@@ -14,6 +14,8 @@ module Lutrine::Server
 
   class MessageAction < Action
     property from : Actor
+    @[JSON::Field(key: "serverTime")]
+    property server_time : Time?
     property message : String | Array(String | Array(Lutrine::Dice::Roll))
 
     def roll
@@ -21,6 +23,7 @@ module Lutrine::Server
       case msg
       when String
         @message = Lutrine::Dice::Message.from_string(msg).parts
+        @server_time = Time.utc
         self
       else
         self
