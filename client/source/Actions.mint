@@ -26,10 +26,13 @@ module Actor {
       Result::Err(error)
     }
   }
+  fun toObject(actor : Actor) : Object {
+    `{name: #{actor.name}}`
+  }
 }
 
 module MessageAction.In {
-  fun fromJSON(object: Object) : Result(Object.Error, MessageAction.In) {
+  fun fromObject(object: Object) : Result(Object.Error, MessageAction.In) {
     try {
       type = Object.Decode.field("type", Object.Decode.string, object)
       from = Actor.fromObject(whomst)

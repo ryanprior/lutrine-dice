@@ -25,6 +25,14 @@ module Message.Part {
       Result::Err(error)
     }
   }
+  fun toObject(part : Message.Part) : Object {
+    try {
+      case(part) {
+        Message.Part::Text(string) => `#{string}`
+        Message.Part::Rolls(rolls) => encode rolls
+      }
+    }
+  }
 }
 
 record Message {
@@ -32,7 +40,16 @@ record Message {
   parts : Array(Message.Part)
 }
 
-component Message {
+module Message {
+  fun toObject(message : Message) : Object {
+    `{
+      from: #{Actor.toObject(message.from)},
+      parts: #{Object.Encode.array(message.parts |> Array.map(Message.Part.toObject))}
+    }`
+  }
+}
+
+component MessageDisplay {
   property data : Message
 
   style total {

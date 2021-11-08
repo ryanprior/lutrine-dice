@@ -23,7 +23,7 @@ component Chat {
   fun handleMessage(data: String) {
     try {
       object = Json.parse(data) |> Maybe.toResult("Decode Error")
-      action = MessageAction.In.fromJSON(object)
+      action = MessageAction.In.fromObject(object)
 
       update(action, room)
     }
@@ -84,7 +84,7 @@ component Chat {
       <Chat.Input username={character.name} socket={socket} />
       <ol::messages>
       for (msg of Array.reverse(list |> Map.get(room) |> Maybe.withDefault([]))) {
-          <li::message><Message data={msg} /></li>
+          <li::message><MessageDisplay data={msg} /></li>
         }
       </ol>
     </section>
