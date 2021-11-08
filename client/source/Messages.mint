@@ -167,10 +167,23 @@ store Messages {
             from = action.from,
             parts = action.message
           })
+      array =
+        roomMessages
+        |> Array.map(Message.toObject)
+        |> Object.Encode.array
+      Storage.Local.set(
+        "messages-#{room.id}",
+        array |> Json.stringify
+      )
       next {
         list =
           list
           |> Map.set(room, roomMessages)
+      }
+    } catch Storage.Error => err {
+      sequence {
+        err |> Debug.log
+        next {}
       }
     }
   }
