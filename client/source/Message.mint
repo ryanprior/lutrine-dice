@@ -41,6 +41,21 @@ record Message {
 }
 
 module Message {
+  fun fromObject(object : Object) : Result(Object.Error, Message) {
+    try {
+      from = Actor.fromObject(whomst)
+      message = Object.Decode.array(Message.Part.fromObject, parts)
+      Result::Ok({
+        from = from,
+        parts = message
+      })
+    } catch Object.Error => error {
+      Result::Err(error)
+    }
+  } where {
+    whomst = `#{object}.from`
+    parts = `#{object}.parts`
+  }
   fun toObject(message : Message) : Object {
     `{
       from: #{Actor.toObject(message.from)},
