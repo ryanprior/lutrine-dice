@@ -6,5 +6,8 @@ watch-server:
 dev-server:
 	docker-compose up server
 
+client-static:
+	(cd client && mint build)
+
 destroy-db:
 	:>lutrine-dice.db
