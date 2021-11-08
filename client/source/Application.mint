@@ -23,9 +23,13 @@ store Application {
     }
   }
 
+  fun findRoomKey(id : String) : Maybe(RoomKey) {
+    rooms |> Array.find((key : RoomKey) : Bool { key.room.id == id})
+  }
+
   fun visitRoom(id : String) {
     sequence {
-      room = rooms |> Array.find((key : RoomKey) : Bool { key.room.id == id })
+      room = id |> Application.findRoomKey
       case (room) {
         Maybe::Just(room) => next {
           view = View::Room(room)
