@@ -53,7 +53,7 @@ component Main {
           View::Room(place) =>
           <>
             <ConnectionSidebar />
-            <Chat room={place.room.id} roomKey={place.key} />
+            <Chat room={place.room} roomKey={place.key} />
           </>
         }
       </section>

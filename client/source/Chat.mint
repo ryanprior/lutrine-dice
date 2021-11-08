@@ -4,13 +4,13 @@ component Chat {
   connect Theme exposing { theme }
   connect Characters exposing { character }
 
-  property room : String
+  property room : Room
   property roomKey : String
   state socket : Maybe(WebSocket) = Maybe::Nothing
   state shouldConnect = true
 
   use Provider.WebSocket {
-    url = "#{ws}/chat/#{room}?key=#{roomKey}",
+    url = "#{ws}/chat/#{room.id}?key=#{roomKey}",
     reconnectOnClose = true,
     onMessage = handleMessage,
     onError = handleError,
@@ -25,7 +25,7 @@ component Chat {
       object = Json.parse(data) |> Maybe.toResult("Decode Error")
       action = MessageAction.In.fromJSON(object)
 
-      update(action)
+      update(action, room)
     }
 
     catch Object.Error => err {
@@ -83,7 +83,7 @@ component Chat {
     <section::chat>
       <Chat.Input username={character.name} socket={socket} />
       <ol::messages>
-        for (msg of Array.reverse(list)) {
+      for (msg of Array.reverse(list |> Map.get(room) |> Maybe.withDefault([]))) {
           <li::message><Message data={msg} /></li>
         }
       </ol>
