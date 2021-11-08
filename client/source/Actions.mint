@@ -11,6 +11,7 @@ record MessageAction.Out {
 record MessageAction.In {
   type : String,
   from : Actor,
+  serverTime : String,
   message : Array(Message.Part)
 }
 
@@ -36,6 +37,7 @@ module MessageAction.In {
       Result::Ok({
         type = type,
         from = from,
+        serverTime = time,
         message = message
       })
     } catch Object.Error => error {
@@ -44,5 +46,6 @@ module MessageAction.In {
   } where {
     whomst = `#{object}.from`
     parts = `#{object}.message`
+    time = `#{object}.serverTime`
   }
 }
