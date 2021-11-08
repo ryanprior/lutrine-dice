@@ -156,6 +156,43 @@ store Messages {
     }
   }
 
+  fun loadForRoom (id : String) {
+    try {
+      room = Application.findRoomKey(id)
+      case(room) {
+        Maybe::Just(key) =>
+          try {
+            data = Storage.Local.get("messages-#{key.room.id}")
+            object =
+              Json.parse(data)
+              |> Maybe.toResult("Decode Error")
+            roomMessages = object |> Object.Decode.array(Message.fromObject)
+            next {
+              list =
+                list
+                |> Map.set(key.room, roomMessages)
+            }
+          } catch Object.Error => error {
+            sequence {
+              error |> Debug.log
+              next {}
+            }
+          } catch Storage.Error => error {
+            sequence {
+              error |> Debug.log
+              next {}
+            }
+          } catch String => error {
+            sequence {
+              error |> Debug.log
+              next {}
+            }
+          }
+          => next {}
+      }
+    }
+  }
+
   fun update (action : MessageAction.In, room : Room) {
     try {
       roomMessages =

@@ -20,6 +20,7 @@ routes {
   /room/:id-:name (id: String, name: String) {
     sequence {
       Application.initialize()
+      Messages.loadForRoom(id)
       Application.visitRoom(id)
     }
   }
