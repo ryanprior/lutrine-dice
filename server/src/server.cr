@@ -17,6 +17,15 @@ def add_cors_headers(env)
   env.response.headers.add("Access-Control-Allow-Headers", "*")
 end
 
+# Redirect root or room URLs to index.html
+get "/" do |env|
+  send_file env, "public/index.html"
+end
+
+get "/room/:id-:name" do |env|
+  send_file env, "public/index.html"
+end
+
 options "/api/room" do |env|
   add_cors_headers env
 end
