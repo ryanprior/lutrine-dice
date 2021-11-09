@@ -2,7 +2,7 @@ version: '3'
 
 services:
   server:
-    image: ryanprior/lutrine-dice-crystal:1.1.0-alpine
+    image: ryanprior/lutrine-dice-crystal:1.2-dev-alpine
     build:
       context: ./server
       dockerfile: Dockerfile.dev
