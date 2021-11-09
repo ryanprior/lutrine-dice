@@ -3,55 +3,102 @@ record Character {
 }
 
 store Characters {
-  state playerCharacters : Array(Character) = [
-    {name = "Gamer"},
-    {name = "Player"},
-  ]
-  state index = 0
+  state playerCharacters : Map(Room, Array(Character)) = Map.empty()
+  state indexes : Map(Room, Number) = Map.empty()
+
+  get roomCharacters : Array(Character) {
+    case(Application.view) {
+      View::Room(key) => playerCharacters
+        |> Map.get(key.room)
+        |> Maybe.withDefault([])
+        => []
+    }
+  }
+
+  get index : Number {
+    case(Application.view) {
+      View::Room(key) => indexes
+        |> Map.get(key.room)
+        |> Maybe.withDefault(0)
+        => 0
+    }
+  }
 
   get character : Character {
-    Array.at(index, playerCharacters)
+    Array.at(index, roomCharacters)
       |> Maybe.withDefault({name = "[nobody]"})
   }
 
   fun select(i : Number) {
-    next {
-      index = i
+    case (Application.view) {
+      View::Room(key) => next {
+        indexes =
+          indexes
+          |> Map.set(key.room, i)
+      }
+        => next {}
     }
   }
 
   fun add(character : Character) {
-    next {
-      playerCharacters = playerCharacters |> Array.push(character)
+    case (Application.view) {
+      View::Room(key) => next {
+        playerCharacters =
+          playerCharacters
+          |> Map.set(key.room, newCharacters)
+      }
+        => next {}
     }
+  } where {
+    newCharacters =
+      roomCharacters
+      |> Array.push(character)
   }
 
   fun remove(position : Number) {
-    sequence {
-      if (index >= position && index > 0) {
+    case (Application.view) {
+      View::Room(key) => sequence {
+        if (index >= position && index > 0) {
+          next {
+            indexes =
+              indexes
+              |> Map.set(key.room, index - 1)
+          }
+        } else { next {} }
         next {
-          index = index - 1
+          playerCharacters =
+            playerCharacters
+            |> Map.set(key.room, newCharacters)
         }
-      } else { next {}}
-      next {
-        playerCharacters = playerCharacters |> Array.deleteAt(position)
       }
+        => next {}
     }
+  } where {
+    newCharacters =
+      roomCharacters
+      |> Array.deleteAt(position)
   }
 
   fun rename(index : Number, newName : String) {
-    next {
-      playerCharacters =
-        playerCharacters
-        |> Array.updateAt(index,(character : Character) : Character {
-          { character | name = newName }
-        })
+    case (Application.view) {
+      View::Room(key) => next {
+        playerCharacters =
+          playerCharacters
+          |> Map.set(key.room, newCharacters)
+      }
+        => next {}
     }
+  } where {
+    newCharacters =
+      roomCharacters
+      |> Array.updateAt(index,(character : Character) : Character {
+        { character | name = newName }
+      })
   }
 }
 
 component CharacterList {
-  connect Characters exposing { playerCharacters, index, rename, select, add, remove }
+  connect Characters exposing { roomCharacters, index, rename, select, add, remove }
   connect Theme exposing { theme }
 
   style characters {
@@ -73,7 +120,7 @@ component CharacterList {
       "Your characters:"
       <ul>
         <{
-          playerCharacters |> Array.mapWithIndex((character : Character, i : Number) : Html {
+          roomCharacters |> Array.mapWithIndex((character : Character, i : Number) : Html {
             <CharacterListItem
               current={i == index}
               data={character}
