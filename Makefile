@@ -1,4 +1,4 @@
-.PHONY: watch-server dev-server
+.PHONY: dev server-staging deploy-prod client-static destroy-db
 
 dev:
 	docker-compose up -d
@@ -9,6 +9,10 @@ server-prod:
 	(cd client && mint build)
 	docker build -t lutrine-dice .
 
+deploy-staging:
+	(cd client && mint build --skip-service-worker --minify --env ../.env.staging)
+	docker-compose build server
+	flyctl deploy
 
 client-static:
 	(cd client && mint build)
