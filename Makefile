@@ -3,8 +3,11 @@
 watch-server:
 	watchexec -w server -w client/dist docker-compose restart server
 
-dev-server:
-	docker-compose up server
+server-prod:
+	docker-compose build server
+	(cd client && mint build)
+	docker build -t lutrine-dice .
+
 
 client-static:
 	(cd client && mint build)
