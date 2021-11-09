@@ -1,6 +1,7 @@
 .PHONY: watch-server dev-server
 
-watch-server:
+dev:
+	docker-compose up -d
 	watchexec -w server -w client/dist docker-compose restart server
 
 server-prod:
