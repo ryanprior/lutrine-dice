@@ -22,7 +22,8 @@ services:
     image: mintlang/mint
     volumes:
       - ./client:/opt/client
+      - ./.env.dev:/var/data/env
     working_dir: /opt/client
-    command: start --host 0.0.0.0
+    command: start --env /var/data/env --host 0.0.0.0
     ports:
       - 3001:3000
