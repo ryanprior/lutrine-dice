@@ -39,4 +39,11 @@ store Api {
       |> Application.authRoom
       |> Http.send
   }
+
+  fun messageHistory(roomId : String) {
+    "#{base}/api/room/#{roomId}/history"
+      |> Http.post
+      |> Application.authRoom
+      |> Http.send
+  }
 }
