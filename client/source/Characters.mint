@@ -40,6 +40,44 @@ store Characters {
     }
   }
 
+  fun loadForRoom(id : String) {
+    try {
+      room = Application.findRoomKey(id)
+      case(room) {
+        Maybe::Just(key) => try {
+          data = Storage.Local.get("characters-#{key.room.id}")
+          object =
+            Json.parse(data)
+            |> Maybe.toResult("Decode Error")
+          characters =
+            object
+            |> Object.Decode.array(Actor.fromObject)
+          next {
+            playerCharacters =
+              playerCharacters
+              |> Map.set(key.room, characters)
+          }
+        } catch Object.Error => error {
+          sequence {
+            error |> Debug.log
+            next {}
+          }
+        } catch Storage.Error => error {
+          sequence {
+            error |> Debug.log
+            next {}
+          }
+        } catch String => error {
+          sequence {
+            error |> Debug.log
+            next {}
+          }
+        }
+          => next {}
+      }
+    }
+  }
+
   fun persist(room : Room) {
     try {
       array =

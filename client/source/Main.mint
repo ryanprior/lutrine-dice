@@ -21,6 +21,7 @@ routes {
     sequence {
       Application.initialize()
       Messages.loadForRoom(id)
+      Characters.loadForRoom(id)
       Application.visitRoom(id)
     }
   }
