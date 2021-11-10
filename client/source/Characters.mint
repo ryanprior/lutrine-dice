@@ -40,12 +40,36 @@ store Characters {
     }
   }
 
+  fun persist(room : Room) {
+    try {
+      array =
+        playerCharacters
+        |> Map.get(room)
+        |> Maybe.withDefault([])
+        |> Array.map(Actor.toObject)
+        |> Object.Encode.array
+      Storage.Local.set(
+        "characters-#{room.id}",
+        array |> Json.stringify
+      )
+    }
+  }
+
   fun add(character : Character) {
     case (Application.view) {
-      View::Room(key) => next {
-        playerCharacters =
-          playerCharacters
-          |> Map.set(key.room, newCharacters)
+      View::Room(key) => try {
+        next {
+          playerCharacters =
+            playerCharacters
+            |> Map.set(key.room, newCharacters)
+        }
+        persist(key.room)
+        next {}
+      } catch Storage.Error => error {
+        try {
+          Debug.log(error)
+          next {}
+        }
       }
         => next {}
     }
@@ -57,7 +81,7 @@ store Characters {
 
   fun remove(position : Number) {
     case (Application.view) {
-      View::Room(key) => sequence {
+      View::Room(key) => try {
         if (index >= position && index > 0) {
           next {
             indexes =
@@ -70,6 +94,13 @@ store Characters {
             playerCharacters
             |> Map.set(key.room, newCharacters)
         }
+        persist(key.room)
+        next {}
+      } catch Storage.Error => error {
+        try {
+          Debug.log(error)
+          next {}
+        }
       }
         => next {}
     }
@@ -81,10 +112,19 @@ store Characters {
 
   fun rename(index : Number, newName : String) {
     case (Application.view) {
-      View::Room(key) => next {
-        playerCharacters =
-          playerCharacters
-          |> Map.set(key.room, newCharacters)
+      View::Room(key) => try {
+        next {
+          playerCharacters =
+            playerCharacters
+            |> Map.set(key.room, newCharacters)
+        }
+        persist(key.room)
+        next {}
+      } catch Storage.Error => error {
+        try {
+          Debug.log(error)
+          next {}
+        }
       }
         => next {}
     }
