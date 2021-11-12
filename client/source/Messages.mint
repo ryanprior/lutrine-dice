@@ -1,7 +1,6 @@
 store Messages {
   state list : Map(Room, Array(Message)) = Map.empty()
 
-
   fun populateTestMessages(room : Room) {
     next {
       list = list
@@ -212,6 +211,7 @@ store Messages {
         "messages-#{room.id}",
         array |> Json.stringify
       )
+      Application.recordContact(room, action.serverTime)
       next {
         list =
           list

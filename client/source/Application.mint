@@ -16,6 +16,7 @@ record RoomKey {
 store Application {
   state view : View = View::Welcome
   state rooms : Array(RoomKey) = []
+  state lastContact : Map(Room, String) = Map.empty()
 
   fun visitWelcome {
     next {
@@ -51,6 +52,26 @@ store Application {
   fun initialize {
     sequence {
       loadKeys()
+    }
+  }
+
+  fun recordContact(room : Room, when : String) {
+    sequence {
+      next {
+        lastContact =
+          lastContact
+          |> Map.set(room, when)
+      }
+      array = lastContact
+        |> Map.entries
+        |> Array.map((data : Tuple(Room, String)) { `{room: {id: #{data[0].id}, name: #{data[0].name}}, when: #{data[1]}}` })
+        |> Object.Encode.array
+      Storage.Local.set(
+        "last-contact",
+        array |> Json.stringify
+      )
+    } catch Storage.Error => error {
+      Result::Err(error)
     }
   }
 
