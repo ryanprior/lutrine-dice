@@ -52,6 +52,7 @@ store Application {
   fun initialize {
     sequence {
       loadKeys()
+      loadContacts()
     }
   }
 
@@ -72,6 +73,44 @@ store Application {
       )
     } catch Storage.Error => error {
       Result::Err(error)
+    }
+  }
+
+  fun loadContacts {
+    try {
+      data = Storage.Local.get("last-contact")
+      object =
+        Json.parse(data)
+        |> Maybe.toResult("Could not parse last-contact data.")
+      array =
+        object
+        |> Object.Decode.array((object : Object) {
+          Result::Ok({
+            {
+              name = `#{object}.room.name`,
+              id = `#{object}.room.id`
+            },
+            `#{object}.when`
+          })
+        })
+      next {
+        lastContact = Map.fromArray(array)
+      }
+    } catch Storage.Error => error {
+      try {
+        Debug.log(error)
+        next {}
+      }
+    } catch String => error {
+      try {
+        Debug.log(error)
+        next {}
+      }
+    } catch Object.Error => error {
+      try {
+        Debug.log(error)
+        next {}
+      }
     }
   }
 
