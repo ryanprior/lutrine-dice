@@ -68,9 +68,12 @@ get "/api/room/:id/history" do |env|
   WORLD.enter do |db|
     halt(env, status_code: 403, response: "Forbidden") unless room.key_valid? token, db
     messages = Server::Memo.messages_for id, since, db
+    message_actions = messages.map do |msg|
+      Server::MessageAction.from_json msg.message
+    end
     add_cors_headers env
     env.response.content_type = "application/json"
-    messages.to_json
+    message_actions.to_json
   end
 end
 
