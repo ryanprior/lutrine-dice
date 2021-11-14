@@ -40,9 +40,9 @@ store Api {
       |> Http.send
   }
 
-  fun messageHistory(roomId : String) {
-    "#{base}/api/room/#{roomId}/history"
-      |> Http.post
+  fun messageHistory(roomId : String, since : String) {
+    "#{base}/api/room/#{roomId}/history?since=#{since}"
+      |> Http.get
       |> Application.authRoom
       |> Http.send
   }
