@@ -1,7 +1,11 @@
 app = "lively-water-5469"
 
 [env]
-  LUTRINE_DB = "sqlite3:/lutrine-dice.db"
+  LUTRINE_DB = "sqlite3:/data/lutrine-dice.db"
+
+[mounts]
+source = "lutrine_data"
+destination = "/data"
 
 [[services]]
   internal_port = 3000
