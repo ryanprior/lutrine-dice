@@ -63,7 +63,7 @@ get "/api/room/:id/history" do |env|
   id = env.params.url["id"]
   auth_header = env.request.headers["Authorization"] || halt(env, status_code: 401, response: "Unauthorized")
   token = auth_header.split[1]
-  since = env.params.url.fetch("since", "0")
+  since = env.params.query.fetch("since", "0")
   room = WORLD.room(id) || halt(env, status_code: 404, response: "Room not found")
   WORLD.enter do |db|
     halt(env, status_code: 403, response: "Forbidden") unless room.key_valid? token, db
