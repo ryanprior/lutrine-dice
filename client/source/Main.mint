@@ -23,6 +23,7 @@ routes {
       Messages.loadForRoom(id)
       Characters.loadForRoom(id)
       Application.visitRoom(id)
+      Messages.backfillForRoom(id)
     }
   }
 }

@@ -188,6 +188,40 @@ store Messages {
     }
   }
 
+  fun backfillForRoom (id : String) {
+    sequence {
+      key =
+        Application.findRoomKey(id)
+        |> Maybe.toResult("No such room")
+      lastContact =
+        Application.lastContact
+        |> Map.get(key.room)
+        |> Maybe.withDefault("0")
+      response = Api.messageHistory(id, lastContact)
+      object =
+        Json.parse(response.body)
+        |> Maybe.toResult("Could not parse message JSON")
+      messages =
+        object
+        |> Object.Decode.array(MessageAction.In.fromObject)
+      for (message of Array.reverse(messages)) {
+        update(message, key.room)
+      }
+      next {}
+    } catch Object.Error => error {
+      sequence {
+        error |> Debug.log
+        next {}
+      }
+    } catch Http.ErrorResponse => error {
+      sequence {
+        error |> Debug.log
+        next {}
+      }
+    } catch String => error {
+      sequence {
+        error |> Debug.log
+        next {}
       }
     }
   }
