@@ -2,6 +2,7 @@ routes {
   / {
     sequence {
       Application.initialize()
+      Realtime.disconnect()
       Application.visitWelcome()
     }
   }
@@ -23,6 +24,7 @@ routes {
       Messages.loadForRoom(id)
       Characters.loadForRoom(id)
       Application.visitRoom(id)
+      Realtime.connect()
       Messages.backfillForRoom(id)
     }
   }
