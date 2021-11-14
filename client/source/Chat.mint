@@ -94,23 +94,41 @@ component Chat {
     list-style: none;
     padding: 0px;
     display: grid;
-    grid-template-columns: 6rem 1fr;
+    grid-template-columns: 2rem 1fr;
     grid-gap: 0px;
   }
 
   style message {
     display: contents;
     word-break: break-word;
+
+    &:not(:first-child) .whomst {
+      border-top: 1px dotted #495057;
+    }
   }
 
   fun render {
     <section::chat>
       <Chat.Input username={character.name} socket={socket} />
       <ol::messages>
-      for (msg of Array.reverse(list |> Map.get(room) |> Maybe.withDefault([]))) {
-          <li::message><MessageDisplay data={msg} /></li>
+      for (pair of pairs) {
+          <li::message><MessageDisplay data={pair[0]} first={pair[1]} /></li>
         }
       </ol>
     </section>
+  } where {
+    messages =
+      list
+      |> Map.get(room)
+      |> Maybe.withDefault([])
+      |> Array.reverse
+    pairs =
+      messages
+      |> Array.mapWithIndex((msg : Message, n : Number) : Tuple(Message, Bool) {
+        case (messages |> Array.at(n - 1)) {
+          Maybe::Just(prev) => {msg, msg.from != prev.from}
+            => {msg, true}
+        }
+      })
   }
 }

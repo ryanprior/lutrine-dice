@@ -66,6 +66,7 @@ module Message {
 
 component MessageDisplay {
   property data : Message
+  property first : Bool
 
   style total {
     display: inline-block;
@@ -82,16 +83,20 @@ component MessageDisplay {
 
   style sender {
     line-height: 22pt;
+    font-size: 0.8rem;
+    font-weight: bold;
     align-self: end;
     padding: 0.125rem 0.5rem 0.125rem 0px;
-    border-bottom: 1px dotted #495057;
     word-break: break-word;
+    grid-column: span 2;
+    if(!first) {
+      display: none;
+    }
   }
 
   style message {
     line-height: 22pt;
     align-self: end;
-    border-bottom: 1px dotted #495057;
     padding: 0.125rem 0px;
   }
 
@@ -108,8 +113,9 @@ component MessageDisplay {
 
   fun render {
     <>
-      <span::sender><{ data.from.name }></span>
-      <span::message>
+      <div::sender class="whomst"><{ data.from.name }></div>
+      <span></span>
+      <div::message>
         for (part of data.parts) {
           case (part) {
             Message.Part::Text(string) => <{ string }>
@@ -125,7 +131,7 @@ component MessageDisplay {
             </span>
           }
         }
-      </span>
+      </div>
     </>
   }
 }
