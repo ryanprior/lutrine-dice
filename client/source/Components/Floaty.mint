@@ -1,7 +1,19 @@
 component Floaty {
   property children : Array(Html) = []
   property show = true
-  property onClose : Function(Html.Event, Promise(Never, Void)) = (event : Html.Event) { next {} }
+  property onClose : Function(Promise(Never, Void))
+
+  use Provider.OutsideClick {
+    clicks = () {
+      sequence {
+        onClose()
+        next {}
+      }
+    },
+    elements = [wrapper]
+  } when {
+    show
+  }
 
   style outer {
     position: relative;
@@ -79,7 +91,7 @@ component Floaty {
   }
 
   fun render {
-    <div::outer>
+    <div::outer as wrapper>
       <div::main>
         <{ children }>
         <span::close title="Close" onClick={onClose}>"☒"</span>

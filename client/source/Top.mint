@@ -99,9 +99,7 @@ component Top {
       </span>
       <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
     <Floaty show={Maybe.isJust(currentInvite)}
-            onClose={(event : Html.Event) {
-              next {currentInvite = Maybe::Nothing}
-            }}>
+            onClose={() { next {currentInvite = Maybe::Nothing} }}>
       <input::invite-link as inviteInput
       type="text"
       readonly={true}
