@@ -29,7 +29,7 @@ module Message.Part {
     try {
       case(part) {
         Message.Part::Text(string) => `#{string}`
-        Message.Part::Rolls(rolls) => encode rolls
+        Message.Part::Rolls(rolls) => rolls |> Array.map(Roll.toObject) |> Object.Encode.array
       }
     }
   }

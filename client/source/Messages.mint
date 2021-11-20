@@ -21,7 +21,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 20,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [14]
                     },
@@ -30,7 +31,8 @@ store Messages {
                         {
                           count = 11,
                           sides = 1,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [11]
                     }
@@ -49,7 +51,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 20,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [20]
                     },
@@ -58,7 +61,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 4,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [2]
                     },
@@ -67,7 +71,8 @@ store Messages {
                         {
                           count = 13,
                           sides = 1,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [13]
                     }
@@ -80,7 +85,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 20,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [1]
                     },
@@ -89,7 +95,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 4,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [4]
                     },
@@ -98,7 +105,8 @@ store Messages {
                         {
                           count = 13,
                           sides = 1,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [13]
                     }
@@ -121,7 +129,8 @@ store Messages {
                         {
                           count = 1,
                           sides = 20,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [1]
                     }
@@ -144,7 +153,8 @@ store Messages {
                         {
                           count = 12,
                           sides = 6,
-                          constant = 1
+                          constant = 1,
+                          adjust = Maybe::Nothing
                         },
                       results = [6, 1, 1, 2, 6, 3, 1, 1, 4, 6, 5, 6]
                     }
