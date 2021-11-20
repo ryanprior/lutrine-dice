@@ -1,4 +1,4 @@
-app = "lively-water-5469"
+app = "lutrine-dice-staging"
 
 [env]
   LUTRINE_DB = "sqlite3:/data/lutrine-dice.db"
@@ -17,12 +17,14 @@ destination = "/data"
 
   [[services.ports]]
     handlers = ["http"]
-    port = "80"
+    port = 80
 
   [[services.ports]]
     handlers = ["tls", "http"]
-    port = "443"
+    port = 443
 
   [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
+    grace_period = "1s"
+    interval = "10s"
+    restart_limit = 0
+    timeout = "2s"
