@@ -97,7 +97,9 @@ component Top {
           View::Room(place) => place.room.name
         }
       </span>
-      <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
+      if(Application.view != View::Welcome) {
+        <span::invite><a href="#" onClick={handleInvite}>"invite players"</a></span>
+      }
     <Floaty show={Maybe.isJust(currentInvite)}
             onClose={() { next {currentInvite = Maybe::Nothing} }}>
       <input::invite-link as inviteInput
