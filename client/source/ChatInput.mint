@@ -39,8 +39,11 @@ component Chat.Input {
   }
 
   fun componentDidMount {
-    next {
-      currentExample = Array.sample(examples)
+    sequence {
+      Dom.focus(input)
+      next {
+        currentExample = Array.sample(examples)
+      }
     }
   }
 
@@ -70,19 +73,19 @@ component Chat.Input {
     jsonMessage = Json.stringify(messageObject)
   }
 
-  style messageInput {
-    width: calc(100% - 0.6rem);
-  }
-
   fun updateMessage(event: Html.Event) {
     next {
       message = Dom.getValue(event.target)
     }
   }
 
+  style messageInput {
+    width: calc(100% - 0.6rem);
+  }
+
   fun render {
     <form onSubmit={ sendMessage }>
-      <input::messageInput
+      <input::messageInput as input
         placeholder="ex: #{currentExample |> Maybe.withDefault("1d20")}"
         autofocus="true"
         value={message}
