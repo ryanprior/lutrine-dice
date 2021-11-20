@@ -2,7 +2,6 @@ require "pegmatite"
 require "./models/dice"
 
 module Lutrine::Dice
-
   Grammar = Pegmatite::DSL.define do
     whitespace = (char(' ') | char('\t')).repeat
     whitespace_pattern(whitespace)
@@ -15,10 +14,16 @@ module Lutrine::Dice
     ).named :number
 
     d = char('d') | char('D')
-    dice = (digits.maybe.named(:count) >> d >> digits.named(:sides)).named :dice
+    adjust_symbol = char('h') | char('l') | char('H') | char('L')
+    sign = char('+') | char('-')
+    drop = (
+      char('-') ^ digits.named(:count).maybe >> adjust_symbol.named(:symbol)
+    ).named :drop
+    dice = (
+      digits.maybe.named(:count) >> d >> digits.named(:sides) ^ drop.maybe.named(:drop)
+    ).named :dice
 
     value = dice | number
-    sign = char('+') | char('-')
 
     compound = ((value >> (whitespace.maybe >> sign.named(:sign) ^ value).repeat(1)) \
                 | dice
@@ -73,7 +78,7 @@ module Lutrine::Dice
         case kind
         when :sign then sign = source[start...finish] === "+" ? 1 : -1
         when :dice then result << build_dice(child, iter, source, sign)
-        when :number then result << Dice.new source[start...finish].to_i32, 1, sign
+        when :number then result << Dice.new source[start...finish].to_i32, 1, sign, nil
         else raise NotImplementedError.new kind
         end
       end
@@ -86,11 +91,29 @@ module Lutrine::Dice
       count = source[start...finish].to_i32? || 1
       _, start, finish = iter.next_as_child_of(main)
       sides = source[start...finish].to_i32
+      drop = build_drop(iter.next_as_child_of(main), iter, source)
 
       case {count, sides}
-      when {Int32, Int32} then Dice.new count, sides, sign
+      when {Int32, Int32} then Dice.new count, sides, sign, drop
       else raise NotImplementedError.new({count, sides})
       end
+    end
+
+    private def self.build_drop(main, iter, source)
+      _, start, finish = main
+      return nil if start == finish
+      count = 1
+      symbol = AdjustType::Low
+
+      iter.while_next_is_child_of(main) do |child|
+        kind, start, finish = child
+        case kind
+        when :count then count = source[start...finish].to_i32
+        when :symbol then
+          symbol = source[start...finish] =~ /[Hh]/ ? AdjustType::High : AdjustType::Low
+        end
+      end
+      Adjust.new 1, count, symbol
     end
   end
 end

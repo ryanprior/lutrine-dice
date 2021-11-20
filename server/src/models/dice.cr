@@ -3,7 +3,16 @@ require "../dice"
 
 module Lutrine::Dice
 
-  record Dice, count : Int32, sides : Int32, constant : Int32 do
+  enum AdjustType
+    Low
+    High
+  end
+
+  record Adjust, sign : Int32, count : Int32, type : AdjustType do
+    include JSON::Serializable
+  end
+
+  record Dice, count : Int32, sides : Int32, constant : Int32, adjust : Adjust? do
     include JSON::Serializable
 
     def roll
