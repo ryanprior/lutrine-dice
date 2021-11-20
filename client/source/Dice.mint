@@ -146,6 +146,7 @@ module Roll {
 component DiceRoll {
   property data : Roll
   property showDice = true
+  property big = false
 
   style results {
     display: inline-block;
@@ -182,9 +183,11 @@ component DiceRoll {
       if (dice.sides != 1) {
         <>
           "d#{dice.sides}"
+          <Die sides={dice.sides} face={highest} big={big} />
           if(showDice) {
-            case(dice.adjust) {
-              Maybe::Just(adjust) =>
+            <>
+              case(dice.adjust) {
+                Maybe::Just(adjust) =>
                 <>
                   <span::results>
                     <{
@@ -201,17 +204,23 @@ component DiceRoll {
                     }>
                   </span>
                 </>
-              Maybe::Nothing =>
-                <span::results>
+                Maybe::Nothing =>
+                  <span::results>
                   <{ results |> Array.map(Number.toString) |> String.join(", ") }>
-                </span>
-            }
+                  </span>
+              }
+            </>
           }
         </>
       }
     </span>
   } where {
     results = data.results
+    highest =
+      (data |> Roll.adjustResults(false)).results
+      |> Array.sort((a : Number, b : Number) { b - a })
+      |> Array.at(0)
+      |> Maybe.withDefault(0)
     dice = data.dice
   }
 }

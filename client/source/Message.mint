@@ -67,6 +67,7 @@ module Message {
 component MessageDisplay {
   property data : Message
   property first : Bool
+  property mostRecent : Bool
 
   style total {
     display: inline-block;
@@ -119,16 +120,16 @@ component MessageDisplay {
         for (part of data.parts) {
           case (part) {
             Message.Part::Text(string) => <{ string }>
-              Message.Part::Rolls(rolls) =>
-            <span::roll>
-              for (roll of rolls) {
-                <DiceRoll data={roll} showDice={rolls |> complex} />
-              }
-              if(rolls |> complex) {
-                " = "
-              }
-              <span::total><{ Roll.total(rolls) |> Number.toString }></span>
-            </span>
+            Message.Part::Rolls(rolls) =>
+              <span::roll>
+                <{rolls |> Array.map((roll : Roll) : Html {
+                  <DiceRoll data={roll} showDice={rolls |> complex} big={mostRecent} />
+                })}>
+                if(rolls |> complex) {
+                  " = "
+                }
+                <span::total><{ Roll.total(rolls) |> Number.toString }></span>
+              </span>
           }
         }
       </div>

@@ -111,8 +111,8 @@ component Chat {
     <section::chat>
       <Chat.Input username={character.name} socket={socket} />
       <ol::messages>
-      for (pair of pairs) {
-          <li::message><MessageDisplay data={pair[0]} first={pair[1]} /></li>
+      for (data of displays) {
+          <li::message><MessageDisplay data={data[0]} first={data[1]} mostRecent={data[2]} /></li>
         }
       </ol>
     </section>
@@ -122,12 +122,12 @@ component Chat {
       |> Map.get(room)
       |> Maybe.withDefault([])
       |> Array.reverse
-    pairs =
+    displays =
       messages
-      |> Array.mapWithIndex((msg : Message, n : Number) : Tuple(Message, Bool) {
+      |> Array.mapWithIndex((msg : Message, n : Number) : Tuple(Message, Bool, Bool) {
         case (messages |> Array.at(n - 1)) {
-          Maybe::Just(prev) => {msg, msg.from != prev.from}
-            => {msg, true}
+          Maybe::Just(prev) => {msg, msg.from != prev.from, n == 0}
+            => {msg, true, n == 0}
         }
       })
   }
