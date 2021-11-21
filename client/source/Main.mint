@@ -7,18 +7,18 @@ routes {
     }
   }
 
-  /room/:id-:name?key=:key (id: String, name: String, key: String) {
+  /room/:id/:name?key=:key (id: String, name: String, key: String) {
     try {
       Application.initialize()
       Application.acceptInvite({room = {id = id, name = name}, key = key})
-      Window.navigate("/room/#{id}-#{name}")
+      Window.navigate("/room/#{id}/#{name}")
       Result::Ok(id)
     } catch Storage.Error => error {
       Result::Err(error)
     }
   }
 
-  /room/:id-:name (id: String, name: String) {
+  /room/:id/:name (id: String, name: String) {
     sequence {
       Application.initialize()
       Messages.loadForRoom(id)

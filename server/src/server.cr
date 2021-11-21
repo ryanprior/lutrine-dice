@@ -22,7 +22,7 @@ get "/" do |env|
   send_file env, "public/index.html"
 end
 
-get "/room/:id-:name" do |env|
+get "/room/:id/:name" do |env|
   send_file env, "public/index.html"
 end
 

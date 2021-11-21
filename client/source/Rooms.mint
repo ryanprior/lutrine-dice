@@ -58,7 +58,7 @@ component Rooms {
         |> Maybe.toResult("")
       data = decode object as RoomKey
       Application.acceptInvite(data)
-      Window.navigate("/room/#{data.room.id}-#{data.room.name}")
+      Window.navigate("/room/#{data.room.id}/#{data.room.name}")
     } catch Http.ErrorResponse => error {
       sequence {
         Debug.log(error)
@@ -90,7 +90,7 @@ component Rooms {
       "Join a room"
       <ul>
         for (roomKey of data) {
-          <li><a href="/room/#{roomKey.room.id}-#{roomKey.room.name}"><{ roomKey.room.name }></a></li>
+          <li><a href="/room/#{roomKey.room.id}/#{roomKey.room.name}"><{ roomKey.room.name }></a></li>
         }
       </ul>
       <a::createRoom(true) href="#" onClick={startCreating}>"+ Create a room"</a>

@@ -62,7 +62,7 @@ component Top {
         |> Maybe.toResult("")
       data = decode object as RoomKey
       next {
-        currentInvite = Maybe::Just("#{protocol}://#{`window.location.host`}/room/#{data.room.id}-#{data.room.name}?key=#{data.key}")
+        currentInvite = Maybe::Just("#{protocol}://#{`window.location.host`}/room/#{data.room.id}/#{data.room.name}?key=#{data.key}")
       }
       Result::Ok(response.body)
     } catch Http.ErrorResponse => error {
