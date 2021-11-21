@@ -43,37 +43,49 @@ store Characters {
   fun loadForRoom(id : String) {
     try {
       room = Application.findRoomKey(id)
+      keys = Storage.Local.keys()
       case(room) {
-        Maybe::Just(key) => try {
-          data = Storage.Local.get("characters-#{key.room.id}")
-          object =
-            Json.parse(data)
-            |> Maybe.toResult("Decode Error")
-          characters =
-            object
-            |> Object.Decode.array(Actor.fromObject)
-          next {
-            playerCharacters =
-              playerCharacters
-              |> Map.set(key.room, characters)
+        Maybe::Just(key) => if(
+          keys |> Array.contains("characters-#{key.room.id}")
+        ) {
+          try {
+            data = Storage.Local.get("characters-#{key.room.id}")
+            object =
+              Json.parse(data)
+              |> Maybe.toResult("Decode Error")
+            characters =
+              object
+              |> Object.Decode.array(Actor.fromObject)
+            next {
+              playerCharacters =
+                playerCharacters
+                |> Map.set(key.room, characters)
+            }
+          } catch Storage.Error => error {
+            sequence {
+              ({error, "loadForRoom Storage.Error"}) |> Debug.log
+              next {}
+            }
+          } catch Object.Error => error {
+            sequence {
+              ({error, "loadForRoom Object.Error"}) |> Debug.log
+              next {}
+            }
+          } catch String => error {
+            sequence {
+              ({error, "loadForRoom String error"}) |> Debug.log
+              next {}
+            }
           }
-        } catch Object.Error => error {
-          sequence {
-            error |> Debug.log
-            next {}
-          }
-        } catch Storage.Error => error {
-          sequence {
-            error |> Debug.log
-            next {}
-          }
-        } catch String => error {
-          sequence {
-            error |> Debug.log
-            next {}
-          }
+        } else {
+          next {}
         }
           => next {}
+      }
+    } catch Storage.Error => error {
+      sequence {
+        ({error, "loadForRoom Storage.Error"}) |> Debug.log
+        next {}
       }
     }
   }
