@@ -182,17 +182,17 @@ store Messages {
       }
     } catch Object.Error => error {
       sequence {
-        error |> Debug.log
+        ({error, "loadForRoom Object.Error"}) |> Debug.log
         next {}
       }
     } catch Storage.Error => error {
       sequence {
-        error |> Debug.log
+        ({error, "loadForRoom Storage.Error"}) |> Debug.log
         next {}
       }
     } catch String => error {
       sequence {
-        error |> Debug.log
+        ({error, "loadForRoom String error"}) |> Debug.log
         next {}
       }
     }
@@ -220,17 +220,17 @@ store Messages {
       next {}
     } catch Object.Error => error {
       sequence {
-        error |> Debug.log
+        ({error, "backfillForRoom Object.Error"}) |> Debug.log
         next {}
       }
     } catch Http.ErrorResponse => error {
       sequence {
-        error |> Debug.log
+        ({error, "backfillForRoom Http.ErrorResponse"}) |> Debug.log
         next {}
       }
     } catch String => error {
       sequence {
-        error |> Debug.log
+        ({error, "backfillForRoom String error"}) |> Debug.log
         next {}
       }
     }
@@ -261,9 +261,9 @@ store Messages {
           list
           |> Map.set(room, roomMessages)
       }
-    } catch Storage.Error => err {
+    } catch Storage.Error => error {
       sequence {
-        err |> Debug.log
+        ({error, "Message store update Storage.Error"}) |> Debug.log
         next {}
       }
     }

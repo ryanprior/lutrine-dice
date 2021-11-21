@@ -33,7 +33,7 @@ module Adjust {
       Result::Ok({sign = sign, count = count, type = type})
     } catch Object.Error => error {
       try {
-        error |> Debug.log
+        ({error, "Adjust.fromObject Object.Error"}) |> Debug.log
         Result::Err(error)
       }
     }
@@ -63,7 +63,7 @@ module Dice {
           Maybe::Just(result)
         } catch Object.Error => error {
           try {
-            error |> Debug.log
+            ({error, "Dice.fromObject adjust Object.Error"}) |> Debug.log
             Maybe::Nothing
           }
         }
@@ -73,7 +73,7 @@ module Dice {
       Result::Ok({count = count, sides = sides, constant = constant, adjust = adjust})
     } catch Object.Error => error {
       try {
-        error |> Debug.log
+        ({error, "Dice.fromObject Object.Error"}) |> Debug.log
         Result::Err(error)
       }
     }

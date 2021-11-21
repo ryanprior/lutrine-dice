@@ -117,7 +117,7 @@ store Characters {
         next {}
       } catch Storage.Error => error {
         try {
-          Debug.log(error)
+          ({error, "Characters.add Storage.Error"}) |> Debug.log
           next {}
         }
       }
@@ -148,7 +148,7 @@ store Characters {
         next {}
       } catch Storage.Error => error {
         try {
-          Debug.log(error)
+          ({error, "Characters.remove Storage.Error"}) |> Debug.log
           next {}
         }
       }
@@ -172,7 +172,7 @@ store Characters {
         next {}
       } catch Storage.Error => error {
         try {
-          Debug.log(error)
+          ({error, "Characters.rename StorageError"}) |> Debug.log
           next {}
         }
       }

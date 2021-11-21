@@ -67,16 +67,19 @@ component Top {
       Result::Ok(response.body)
     } catch Http.ErrorResponse => error {
       try {
-        Debug.log(error)
+        ({error, "handleInvite Http.ErrorResponse"}) |> Debug.log
         Result::Err(error)
       }
     } catch Object.Error => error {
       try {
-        Debug.log(error)
+        ({error, "handleInvite Object.Error"}) |> Debug.log
         Result::Err(error)
       }
     } catch String => error {
-      Result::Err(error)
+      try {
+        ({error, "handleInvite String error"}) |> Debug.log
+        Result::Err(error)
+      }
     }
   }
 

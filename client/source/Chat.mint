@@ -56,14 +56,14 @@ component Chat {
       update(action, room)
     }
 
-    catch Object.Error => err {
+    catch Object.Error => error {
       sequence {
-        err |> Debug.log
+        ({error, "handleMessage Object.Error"}) |> Debug.log
         next {}
       }
-    } catch String => err {
+    } catch String => error {
       sequence {
-        err |> Debug.log
+        ({error, "handleMessage String error"}) |> Debug.log
         next {}
       }
     }

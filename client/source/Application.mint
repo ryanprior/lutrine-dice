@@ -98,17 +98,17 @@ store Application {
       }
     } catch Storage.Error => error {
       try {
-        Debug.log(error)
+        ({error, "loadContacts Storage.Error"}) |> Debug.log
         next {}
       }
     } catch String => error {
       try {
-        Debug.log(error)
+        ({error, "loadContacts String error"}) |> Debug.log
         next {}
       }
     } catch Object.Error => error {
       try {
-        Debug.log(error)
+        ({error, "loadContacts Object.Error"}) |> Debug.log
         next {}
       }
     }
@@ -126,12 +126,12 @@ store Application {
       }
     } catch Storage.Error => error {
       sequence {
-        Debug.log(error)
+        ({error, "loadKeys Storage.Error"}) |> Debug.log
         next {}
       }
     } catch Object.Error => error {
       sequence {
-        Debug.log(error)
+        ({error, "loadKeys Object.Error"}) |> Debug.log
         next {}
       }
     } catch String => error {

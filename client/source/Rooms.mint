@@ -61,21 +61,24 @@ component Rooms {
       Window.navigate("/room/#{data.room.id}/#{data.room.name}")
     } catch Http.ErrorResponse => error {
       sequence {
-        Debug.log(error)
+        ({error, "handleNewRoom Http.ErrorResponse"}) |> Debug.log
         next {}
       }
     } catch Storage.Error => error {
       sequence {
-        Debug.log(error)
+        ({error, "handleNewRoom Storage.Error"}) |> Debug.log
         next {}
       }
     } catch Object.Error => error {
       sequence {
-        Debug.log(error)
+        ({error, "handleNewRoom Object.Error"}) |> Debug.log
         next {}
       }
     } catch String => error {
-      next {}
+      sequence {
+        ({error, "handleNewRoom String error"}) |> Debug.log
+        next {}
+      }
     }
   }
 
