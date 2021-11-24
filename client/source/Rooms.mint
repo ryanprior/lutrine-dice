@@ -6,6 +6,13 @@ component Rooms {
 
   connect Theme exposing { theme }
 
+  use Provider.OutsideClick {
+    clicks = cancelCreating,
+    elements = [newRoomForm]
+  } when {
+    Maybe.isJust(newRoomName)
+  }
+
   style rooms {
     list-style: none;
     color: #{theme.interface.textColor};
@@ -38,6 +45,17 @@ component Rooms {
       case(input) {
         Maybe::Just(element) => Dom.focusWhenVisible(element)
           => `console.log('nope')` as Promise(String, Void)
+      }
+    }
+  }
+
+  fun cancelCreating {
+    sequence {
+      next {
+        newRoomName = Maybe::Nothing
+      }
+      next {
+        aggro = false
       }
     }
   }
