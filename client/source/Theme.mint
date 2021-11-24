@@ -9,6 +9,7 @@ record Theme {
   interface : Theme.Section,
   section: Theme.Section,
   chat : Theme.Section,
+  form : Theme.Section,
 }
 
 store Theme {
@@ -37,6 +38,12 @@ store Theme {
       background = "#32373B",
       gutter = "8px",
       radius = "0px",
-    }
+    },
+    form = {
+      textColor = "#6d597a",
+      background = "#d4cbe5",
+      gutter = "3px",
+      radius = "0.25em"
+    },
   }
 }

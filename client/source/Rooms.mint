@@ -108,9 +108,40 @@ component Rooms {
     }
   }
 
+  style title {
+    margin-bottom: 0px;
+  }
+
+  style description {
+    font-size: 10pt;
+    color: #b6c2d9;
+    margin-bottom: 0.5rem;
+  }
+
   style createRoom(invert : Bool) {
     if(`#{Maybe.isNothing(newRoomName)} ^ #{invert}`) {
       display: none;
+    }
+    background: #{theme.form.background};
+    color: #{theme.form.textColor};
+    display: inline-block;
+    margin-top: #{theme.section.gutter};
+    padding: #{theme.section.radius};
+    border-radius: #{theme.section.radius};
+    min-height: 1.6rem;
+    line-height: 1.6rem;
+    vertical-align: middle;
+
+    &.new-room {
+      color: #6d597a;
+    }
+
+    & button {
+      background: #{theme.form.textColor};
+      color: #{theme.form.background};
+      border: none;
+      border-radius: #{theme.form.radius};
+      padding: 2.5px 3.5px;
     }
   }
 
@@ -118,19 +149,37 @@ component Rooms {
     if(aggro) {
       outline: 1px solid red;
     }
+    margin-right: #{theme.form.gutter};
+  }
+
+  style formDesc {
+    font-size: 7pt;
+    line-height: initial;
+    font-weight: 600;
   }
 
   fun render {
     <div::rooms>
-      "Join a room"
+      <h2::title>"Your Games"</h2>
+      <div::description>
+        if(Array.size(data) > 0) {
+          <{"rooms you created or joined"}>
+        } else {
+          <>
+            "create a room to begin! ✨"
+            <br />
+            "then you can invite friends and rivals"
+          </>
+        }
+      </div>
       <ul>
         for (roomKey of data) {
           <li><a href="/room/#{roomKey.room.id}/#{roomKey.room.name}"><{ roomKey.room.name }></a></li>
         }
       </ul>
-      <a::createRoom(true) href="#" onClick={startCreating}>"+ Create a room"</a>
+      <a::createRoom(true) class="new-room" href="#" onClick={startCreating}>"+ Create new"</a>
       <form::createRoom(false) as newRoomForm onSubmit={handleNewRoom}>
-        "Name your room: "
+        <div::formDesc>"Game name"</div>
         <input::roomInput as input
                value={newRoomName |> Maybe.withDefault("")}
                onInput={updateNewName}
