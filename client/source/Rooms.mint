@@ -88,11 +88,6 @@ component Rooms {
             ({error, "handleNewRoom Http.ErrorResponse"}) |> Debug.log
             next {}
           }
-        } catch Storage.Error => error {
-          sequence {
-            ({error, "handleNewRoom Storage.Error"}) |> Debug.log
-            next {}
-          }
         } catch Object.Error => error {
           sequence {
             ({error, "handleNewRoom Object.Error"}) |> Debug.log

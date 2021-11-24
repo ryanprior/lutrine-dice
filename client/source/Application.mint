@@ -149,10 +149,23 @@ store Application {
 
   fun acceptInvite(key: RoomKey) {
     try {
-      next {
-        rooms = rooms |> Array.push(key)
+      found =
+        rooms
+        |> Array.find((item : RoomKey) : Bool {
+          item.room.id == key.room.id
+        })
+      if(Maybe.isNothing(found)) {
+        sequence {
+          next {
+            rooms = rooms |> Array.push(key)
+          }
+          saveKeys()
+        } catch Storage.Error => error {
+          Result::Err(error)
+        }
+      } else {
+        `null` as Promise(Never, Result(Storage.Error, Void))
       }
-      saveKeys()
     }
   }
 }

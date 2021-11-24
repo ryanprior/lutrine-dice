@@ -13,8 +13,6 @@ routes {
       Application.acceptInvite({room = {id = id, name = name}, key = key})
       Window.navigate("/room/#{id}/#{name}")
       Result::Ok(id)
-    } catch Storage.Error => error {
-      Result::Err(error)
     }
   }
 
