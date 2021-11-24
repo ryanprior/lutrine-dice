@@ -1,6 +1,5 @@
 component Floaty {
   property children : Array(Html) = []
-  property show = true
   property onClose : Function(Promise(Never, Void))
 
   use Provider.OutsideClick {
@@ -11,17 +10,12 @@ component Floaty {
       }
     },
     elements = [wrapper]
-  } when {
-    show
   }
 
   style outer {
     position: relative;
     width: 0px;
     height: 0px;
-    if(!show) {
-      display: none;
-    }
   }
 
   style main {
