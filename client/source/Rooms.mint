@@ -2,6 +2,7 @@ component Rooms {
   property data : Array(RoomKey)
 
   state newRoomName : Maybe(String) = Maybe::Nothing
+  state aggro = false
 
   connect Theme exposing { theme }
 
@@ -50,34 +51,41 @@ component Rooms {
   fun handleNewRoom(event : Html.Event) {
     sequence {
       event |> Html.Event.preventDefault
-      response = case(input) {
-        Maybe::Just(element) => Api.createRoom(Dom.getValue(element))
-          => `console.log('no input?')` as Promise(Http.ErrorResponse, Http.Response)
+      name = case(input) {
+        Maybe::Just(element) => Dom.getValue(element)
+        => ""
       }
-      object = Json.parse(response.body)
-        |> Maybe.toResult("")
-      data = decode object as RoomKey
-      Application.acceptInvite(data)
-      Window.navigate("/room/#{data.room.id}/#{data.room.name}")
-    } catch Http.ErrorResponse => error {
-      sequence {
-        ({error, "handleNewRoom Http.ErrorResponse"}) |> Debug.log
-        next {}
-      }
-    } catch Storage.Error => error {
-      sequence {
-        ({error, "handleNewRoom Storage.Error"}) |> Debug.log
-        next {}
-      }
-    } catch Object.Error => error {
-      sequence {
-        ({error, "handleNewRoom Object.Error"}) |> Debug.log
-        next {}
-      }
-    } catch String => error {
-      sequence {
-        ({error, "handleNewRoom String error"}) |> Debug.log
-        next {}
+      if(name |> String.isBlank) {
+        next { aggro = true }
+      } else {
+        sequence {
+          response = Api.createRoom(name)
+          object = Json.parse(response.body)
+            |> Maybe.toResult("")
+          data = decode object as RoomKey
+          Application.acceptInvite(data)
+          Window.navigate("/room/#{data.room.id}/#{data.room.name}")
+        } catch Http.ErrorResponse => error {
+          sequence {
+            ({error, "handleNewRoom Http.ErrorResponse"}) |> Debug.log
+            next {}
+          }
+        } catch Storage.Error => error {
+          sequence {
+            ({error, "handleNewRoom Storage.Error"}) |> Debug.log
+            next {}
+          }
+        } catch Object.Error => error {
+          sequence {
+            ({error, "handleNewRoom Object.Error"}) |> Debug.log
+            next {}
+          }
+        } catch String => error {
+          sequence {
+            ({error, "handleNewRoom String error"}) |> Debug.log
+            next {}
+          }
+        }
       }
     }
   }
@@ -85,6 +93,12 @@ component Rooms {
   style createRoom(invert : Bool) {
     if(`#{Maybe.isNothing(newRoomName)} ^ #{invert}`) {
       display: none;
+    }
+  }
+
+  style roomInput {
+    if(aggro) {
+      outline: 1px solid red;
     }
   }
 
@@ -97,9 +111,9 @@ component Rooms {
         }
       </ul>
       <a::createRoom(true) href="#" onClick={startCreating}>"+ Create a room"</a>
-      <form::createRoom(false) onSubmit={handleNewRoom}>
+      <form::createRoom(false) as newRoomForm onSubmit={handleNewRoom}>
         "Name your room: "
-        <input as input
+        <input::roomInput as input
                value={newRoomName |> Maybe.withDefault("")}
                onInput={updateNewName}
                type="text" />
