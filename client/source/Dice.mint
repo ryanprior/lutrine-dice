@@ -178,7 +178,7 @@ component DiceRoll {
   }
 
   fun render {
-    <span::part(dice.constant) class="die roll">
+    <span::part(dice.constant) class="die roll" translate="no">
       "#{dice.count}"
       if (dice.sides != 1) {
         <>
