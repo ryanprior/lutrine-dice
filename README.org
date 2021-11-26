@@ -1,17 +1,63 @@
 #+TITLE: Lutrine Dice
 
-* Building the dev environment
+- Lutrine :: (adj) Of, pertaining to, or characteristic of an otter. [[https://en.wiktionary.org/wiki/lutrine][(Wiktionary)]]
 
-** Using Docker Compose
+Lutrine Dice is a web application for rolling dice and chatting with friends. You might use it alongside video chat to a play pen & paper role-playing game, or host a whole standalone play by post game inside the app. You can [[https://dice.next.lutrine.com][use it for free]].
 
-Docker Compose has service definitions to build & run the client and server.
+The aim of Lutrine Dice's design philosophy is to create a powerful, streamlined, delightful, playful piece of software, following its otter namesake. Please [[https://github.com/ryanprior/lutrine-dice/issues/new/choose][report an issue]] about anything you encounter that falls short of these ideals.
+
+* Hacking on Lutrine Dice
+
+** The client
+
+| Source code             | lives in the =client/= directory |
+| Implementation language | [[https://www.mint-lang.com/][Mint]]                             |
+| Main entrypoint         | [[file:client/source/Main.mint][main.mint]]                        |
+| Docs                    | TODO                             |
+| License                 | [[https://www.gnu.org/licenses/gpl-3.0.en.html][GNU GPLv3+]] (see [[file:client/LICENSE][client/LICENSE]])  |
+
+** The server
+
+| Source code             | lives in the =server/= directory                                    |
+| Implementation language | [[https://crystal-lang.org/][Crystal]]                                                             |
+| Main entrypoint         | [[file:server/src/server.cr][server.cr]]                                                           |
+| Docs                    | [[file:server/README.md][server README]]                                                       |
+| License                 | [[https://anticapitalist.software/][Anti-capitalist Software License 1.4]] (non-free; see [[file:server/LICENSE][server/LICENSE]]) |
+
+(Want to use the server for capitalist purposes? Get in touch; answer is likely no. You're of course welcome to use the free software client with your own backend.)
+
+** How to set up a dev environment
+
+The way I set up my dev environment requires these tools:
+- Docker & =docker-compose=
+- GNU =make=
+- =watchexec=
+
+With all these tools installed, you can run ~make dev~ to bring up a dev server. It will live in docker-compose as two separate containers, one for the server and another for the client.
 
 #+begin_src bash
-docker-compose up -d
+  # start-up dev environment containers
+  make dev
+  # check service status
+  docker-compose ps
+  # view server logs
+  docker-compose logs server
+  # shut down dev environment
+  docker-compose down
 #+end_src
 
-To re-build the server, run ~docker-compose restart server~. The client dev
-server will hot-reload code when you change files, but if it gets stuck you can
-~docker-compose restart client~.
+Whenever you modify code in the =server= subdirectory, =watchexec= will restart the container for the server which will re-compile. The client container is running the mint dev server which handles its own hot-reload logic.
 
-To view information logged by the server run ~docker-compose logs -f server~.
+The server will be locally accessible on port =3000= and the client on port =3001= (configurable in =docker-compose.yml=.) The dev build is configured to allow CORS and communicate across your local host network. When hacking on the client you should connect to the client container directly so that you benefit from the features of the mint-lang dev server.
+
+*** Database
+
+The dev server uses a =sqlite= file called =lutrine-dice.db= in the project directory to store your local test data. You can run ~make destroy-db~ to get a fresh database. If you delete the file, Docker will try to create a directory called ~lutrine-dice.db/~ and this will break the dev enviornment, so save yourself the hassle and don't do that.
+
+** How to build the production container
+
+The production build also uses =make= and =docker-compose=:
+
+#+begin_src bash
+  make server-container-prod
+#+end_src
