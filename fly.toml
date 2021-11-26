@@ -1,11 +1,14 @@
 app = "lutrine-dice-staging"
 
+[build]
+  image = "ryanprior/lutrine-dice:latest"
+
 [env]
   LUTRINE_DB = "sqlite3:/data/lutrine-dice.db"
 
 [mounts]
-source = "lutrine_data"
-destination = "/data"
+  source = "lutrine_data"
+  destination = "/data"
 
 [[services]]
   internal_port = 3000

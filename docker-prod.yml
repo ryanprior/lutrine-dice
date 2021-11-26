@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  server:
+    image: ryanprior/lutrine-dice
+    build:
+      context: .
+      dockerfile: server/Dockerfile.prod
+    environment:
+      LUTRINE_ENV: prod
+      DIST_DIR: /opt/server/public
+      LUTRINE_DB: sqlite3:/data/lutrine-dice.db
+    volumes:
+      - ./lutrine-dice.db:/data/lutrine-dice.db
+    working_dir: /opt/server
+    command: ./server --bind 0.0.0.0
+    ports:
+      - 3000:3000
+  client:
+    image: mintlang/mint:0.14.0
+    volumes:
+      - ./client:/opt/client
+      - ./.env.staging:/var/data/env
+    working_dir: /opt/client
+    command: build --skip-service-worker --minify --env /var/data/env

@@ -1,8 +1,11 @@
-FROM ryanprior/lutrine-dice-crystal:1.1.0-alpine AS build
+# Production Docker build
+FROM crystallang/crystal:1.2.2-alpine AS build
+RUN apk add sqlite-dev sqlite-static
 WORKDIR /opt/server
-COPY . ./
+COPY ./server ./
 RUN shards build --release --static
 
 FROM scratch
 COPY --from=build /opt/server/bin/server ./server
+COPY ./client/dist/ ./public/
 ENTRYPOINT ["./server"]

@@ -5,13 +5,10 @@ dev:
 	watchexec -w server -w client/dist docker-compose restart server
 
 server-container-prod:
-	docker-compose build server
-	(cd client && mint build)
-	docker build -t lutrine-dice .
+	docker-compose -f docker-prod.yml run --rm client
+	docker-compose -f docker-prod.yml build server
 
-deploy-staging:
-	(cd client && mint build --skip-service-worker --minify --env ../.env.staging)
-	docker-compose build server
+deploy-staging: server-container-prod
 	flyctl deploy
 
 destroy-db:
