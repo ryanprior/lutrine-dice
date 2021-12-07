@@ -12,7 +12,8 @@ store Invite {
               object = Json.parse(response.body)
                 |> Maybe.toResult("")
               data = decode object as RoomKey
-              result = "#{Api.protocol}://#{`window.location.host`}/room/#{data.room.id}/#{data.room.name}?key=#{data.key}"
+              safeName = `encodeURIComponent(#{data.room.name})`
+              result = "#{Api.protocol}://#{`window.location.host`}/room/#{data.room.id}/#{safeName}?key=#{data.key}"
               next {
                 invites =
                   invites
