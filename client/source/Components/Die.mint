@@ -17,7 +17,15 @@ component Die {
     } else {
       width: #{if(face == 20) {"2.5"} else {"1.5"}}rem;
       vertical-align: middle;
-      filter: grayscale(0.8);
+      filter: grayscale(#{
+        case(sides) {
+          8 => 0.55
+          10 => 0.6
+          12 => 0.55
+          20 => if(face == 20) { 0.4 } else { 0.7 }
+            => 0.7
+        }
+      });
     }
 
     @keyframes nat-20 {
