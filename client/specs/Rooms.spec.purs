@@ -8,42 +8,60 @@ module Rooms
   where
 
 import Quickstrom
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), isJust, isNothing)
 
 readyWhen :: Selector
 readyWhen = "#rooms"
 
+rooms = queryOne "#rooms" {}
+
+chat = queryOne "section.af" {}
+
 newRoomButtonDisplay :: Maybe String
-newRoomButtonDisplay = case (queryOne "a.new-room.r" { display: cssValue "display"}) of
-  Just el -> Just el.display
-  Nothing -> Nothing
+newRoomButtonDisplay = map _.display (queryOne "a.new-room.r" { display: cssValue "display"})
 
 newRoomName :: Maybe String
-newRoomName = case queryOne ".rooms form input" { value } of
-  Just el -> Just el.value
-  Nothing -> Nothing
+newRoomName = map _.value (queryOne "#rooms form input" { value })
 
 actions :: Actions
 actions =
   clicks
     <> [ click "a.new-room"
          `followedBy` enterText "new-quickstrom-room"
-         `followedBy` click "form.r button"
        ]
+    -- <> [ click "form.r button" ]
+    <> [ click "h2" ]
 
 proposition :: Boolean
 proposition =
   let
+
     buttonHidden = newRoomButtonDisplay == Just "none"
-
-    goCreate = buttonHidden && next (not buttonHidden)
-
-    doneCreate = (not buttonHidden) && next buttonHidden
+                   || newRoomButtonDisplay == Nothing
 
     noName = newRoomName == Nothing
+             || newRoomName == Just ""
 
-    addName = noName && next newRoomName == Just "new-quickstrom-room"
+    filledName = newRoomName == Just "new-quickstrom-room"
 
-    noop = noName && next noName
+    initial = (isJust rooms) && (not buttonHidden) && noName
+
+    goCreate = (not buttonHidden)
+               && next buttonHidden
+               && next filledName
+
+    cancelCreate = buttonHidden
+                   && next noName
+                   && next (not buttonHidden)
+
+    visitNewRoom = filledName
+                   && next (isJust chat)
+                   && next (isNothing rooms)
+
+    addName = noName && not next noName
+
+    noop = newRoomName == next newRoomName
+           && newRoomButtonDisplay == next newRoomButtonDisplay
   in
-   always (goCreate || doneCreate || addName || noop)
+   initial
+   && always ((isJust rooms) `implies` (goCreate || addName || cancelCreate || noop))
