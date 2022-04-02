@@ -154,7 +154,7 @@ component Rooms {
   }
 
   fun render {
-    <div::rooms>
+    <div::rooms id="rooms">
       <h2::title>"Your Games"</h2>
       <div::description>
         if(Array.size(data) > 0) {
