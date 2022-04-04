@@ -127,7 +127,7 @@ component Rooms {
     line-height: 1.6rem;
     vertical-align: middle;
 
-    &.new-room {
+    &[data-role="create-room"] {
       color: #6d597a;
     }
 
@@ -143,6 +143,8 @@ component Rooms {
   style roomInput {
     if(aggro) {
       outline: 1px solid red;
+    } else {
+      outline: default;
     }
     margin-right: #{theme.form.gutter};
   }
@@ -172,10 +174,11 @@ component Rooms {
           <li><a href="/room/#{roomKey.room.id}/#{roomKey.room.name}"><{ roomKey.room.name }></a></li>
         }
       </ul>
-      <a::createRoom(true) class="new-room" href="#" onClick={startCreating}>"+ Create new"</a>
+      <a::createRoom(true) data-role="create-room" href="#" onClick={startCreating}>"+ Create new"</a>
       <form::createRoom(false) as newRoomForm onSubmit={handleNewRoom}>
         <div::formDesc>"Game name"</div>
         <input::roomInput as input
+               data-role="new-room-name"
                value={newRoomName |> Maybe.withDefault("")}
                onInput={updateNewName}
                type="text" />
