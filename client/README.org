@@ -1,0 +1,32 @@
+#+TITLE: Lutrine Dice Client
+
+* Building
+
+To build the client and server, run ~make~.
+
+To set up a Mint dev server with hot-relaoding, run ~make dev~. Then you can access the client on port 3001.
+
+* Tests
+
+** Behavior tests
+
+The behavior tests are property-based, with specifications written in =PureScript= using [[https://quickstrom.io/][Quickstrom]]. Find them in the [[file:./specs][specs]] directory.
+
+To run: (requires Docker)
+#+begin_src bash
+  make check
+#+end_src
+
+This will take several minutes. On my laptop:
+
+#+begin_src shell-session
+ryan@swallowtail:~/dev/lutrine-dice$ time make check
+[snip]
+Passed 10 tests.
+
+real    3m25.829s
+#+end_src
+
+** Unit tests
+
+Not implemented yet.

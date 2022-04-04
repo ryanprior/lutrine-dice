@@ -13,7 +13,7 @@ The aim of Lutrine Dice's design philosophy is to create a powerful, streamlined
 | Source code             | lives in the =client/= directory |
 | Implementation language | [[https://www.mint-lang.com/][Mint]]                             |
 | Main entrypoint         | [[file:client/source/Main.mint][main.mint]]                        |
-| Docs                    | TODO                             |
+| Docs                    | [[file:client/README.org][client README]]                    |
 | License                 | [[https://www.gnu.org/licenses/gpl-3.0.en.html][GNU GPLv3+]] (see [[file:client/LICENSE][client/LICENSE]])  |
 
 ** The server
