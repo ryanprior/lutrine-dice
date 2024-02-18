@@ -5,7 +5,7 @@ server-container-prod:
 	docker-compose -f docker-prod.yml build server
 
 dev:
-	docker-compose up -d server client webdriver
+	docker-compose up -d server client
 	watchexec -w server -w client/dist --restart docker-compose restart server
 
 check:

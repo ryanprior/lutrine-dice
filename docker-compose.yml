@@ -27,16 +27,14 @@ services:
     command: start --env /var/data/env --host 0.0.0.0
     ports:
       - 3001:3000
-  webdriver:
-    image: instrumentisto/geckodriver
-    network_mode: host
   client-behavior-test:
-    image: quickstrom/quickstrom:latest
+    image: quickstrom/quickstrom:0.5.0
     volumes:
       - ./client/specs:/specs
-    network_mode: host
+      - ./test-screenshots:/tmp
+    # network_mode: host
     command: |
-      quickstrom check
-        /specs/Rooms.spec.purs
-        http://localhost:3001/
-        --tests=10
+      quickstrom --log-level=DEBUG -I/specs
+        check --capture-screenshots
+        Rooms
+        http://client:3000/

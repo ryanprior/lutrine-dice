@@ -1,0 +1,17 @@
+import quickstrom;
+
+let ~ready = `#rooms`.visible;
+
+let ~newRoomButton = `[data-role="create-room"]`;
+let ~newRoomName = `[data-role="new-room-name"]`;
+
+action ~makeNewRoom = click!(newRoomButton);
+action ~enterRoomName = enterTextInto!(newRoomName, "hello-world");
+
+let ~buttonVisible = newRoomButton.visible;
+let ~noName = newRoomName.textContent == "";
+//let ~filledName = newRoomName.textContent == "new-quickstrom-room";
+
+let ~proposition = buttonVisible when ready;
+
+check proposition with * when loaded?;
