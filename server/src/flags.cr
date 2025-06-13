@@ -8,4 +8,8 @@ module Lutrine::Flags
     env? "testing", "local"
   end
 
+  def self.public_dir
+    ENV.fetch("LUTRINE_PUBLIC_DIR", "public")
+  end
+
 end

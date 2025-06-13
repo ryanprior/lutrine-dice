@@ -19,11 +19,11 @@ end
 
 # Redirect root or room URLs to index.html
 get "/" do |env|
-  send_file env, "public/index.html"
+  send_file env, "#{Lutrine::Flags.public_dir}/index.html"
 end
 
 get "/room/:id/:name" do |env|
-  send_file env, "public/index.html"
+  send_file env, "#{Lutrine::Flags.public_dir}/index.html"
 end
 
 options "/api/room" do |env|

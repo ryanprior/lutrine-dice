@@ -14,7 +14,7 @@ You can compile & run this server two ways:
 
 ```sh-session
 $ shards install
-$ crystal run server/src/server.cr
+$ crystal run src/main.cr
 ```
 
 ### Using Docker Compose
